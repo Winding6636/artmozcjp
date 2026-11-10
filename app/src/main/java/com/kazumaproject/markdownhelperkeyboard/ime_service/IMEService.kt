@@ -6867,7 +6867,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 qwertyView.setLongPressTimeout((longPressTimeoutPreferenceValue ?: 300).toLong())
                 qwertyView.applyPopupViewStyleSet(currentQwertyPopupViewStyleSet())
                 qwertyView.setSpecialKeyVisibility(
-                    showCursors = qwertyShowCursorButtonsPreference ?: false,
+                    showCursors = qwertyShowCursorButtonsPreference ?: true,
                     showSwitchKey = qwertyShowIMEButtonPreference ?: true,
                     showKutouten = qwertyShowKutoutenButtonsPreference ?: false,
                     showEmojiKey = qwertyShowEmojiButtonPreference ?: false
@@ -25748,7 +25748,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             setLongPressTimeout((longPressTimeoutPreferenceValue ?: 300).toLong())
             applyPopupViewStyleSet(currentQwertyPopupViewStyleSet())
             setSpecialKeyVisibility(
-                showCursors = qwertyShowCursorButtonsPreference ?: false,
+                showCursors = qwertyShowCursorButtonsPreference ?: true,
                 showSwitchKey = qwertyShowIMEButtonPreference ?: true,
                 showKutouten = qwertyShowKutoutenButtonsPreference ?: false,
                 showEmojiKey = qwertyShowEmojiButtonPreference ?: false

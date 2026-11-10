@@ -366,7 +366,7 @@ object AppPreference {
     private val QWERTY_SHOW_EMOJI_BUTTON =
         Pair("qwerty_show_emoji_button_preference", false)
 
-    private val QWERTY_SHOW_CURSOR_BUTTONS = Pair("qwerty_show_cursor_buttons_preference", false)
+    private val QWERTY_SHOW_CURSOR_BUTTONS = Pair("qwerty_show_cursor_buttons_preference", true)
 
     private val QWERTY_SHOW_KEYMAP_SYMBOLS =
         Pair("qwerty_show_keymap_symbols_romaji_preference", false)
@@ -525,7 +525,7 @@ object AppPreference {
     private val KEYBOARD_FLOATING_POSITION_X = Pair("keyboard_floating_position_x", -1)
     private val KEYBOARD_FLOATING_POSITION_Y = Pair("keyboard_floating_position_y", -1)
 
-    private val defaultKeyboardOrderJson = gson.toJson(defaultKeyboardOrder(isTablet = false))
+    private val defaultKeyboardOrderJson = gson.toJson(legacyDefaultKeyboardOrder())
     private val KEYBOARD_ORDER = Pair("keyboard_order_preference", defaultKeyboardOrderJson)
     private val SETTING_HOME_FREQUENT_KEYS =
         Pair("setting_home_frequent_keys_preference", "")
@@ -1078,7 +1078,7 @@ object AppPreference {
         }
         if (preferences.getBoolean(GOJUON_KEYBOARD_TYPE_MIGRATION_KEY, false)) return
 
-        val legacyDefault = defaultKeyboardOrder(isTablet = false)
+        val legacyDefault = legacyDefaultKeyboardOrder()
         val legacyOrder = if (preferences.contains(KEYBOARD_ORDER.first)) {
             parseKeyboardOrder(
                 preferences.getString(KEYBOARD_ORDER.first, defaultKeyboardOrderJson),
@@ -1107,11 +1107,15 @@ object AppPreference {
         }
     }
 
-    private fun defaultKeyboardOrder(isTablet: Boolean = isTabletDevice): List<KeyboardType> {
+    private fun defaultKeyboardOrder(): List<KeyboardType> {
         return listOf(
-            if (isTablet) KeyboardType.GOJUON else KeyboardType.TENKEY,
+            KeyboardType.ROMAJI_FLICK12,
             KeyboardType.QWERTY,
         )
+    }
+
+    private fun legacyDefaultKeyboardOrder(): List<KeyboardType> {
+        return listOf(KeyboardType.TENKEY, KeyboardType.QWERTY)
     }
 
     private fun parseKeyboardOrder(
@@ -1563,7 +1567,7 @@ object AppPreference {
             QWERTY_SHOW_CURSOR_BUTTONS.first, QWERTY_SHOW_CURSOR_BUTTONS.second
         )
         set(value) = preferences.edit {
-            it.putBoolean(QWERTY_SHOW_CURSOR_BUTTONS.first, value ?: false)
+            it.putBoolean(QWERTY_SHOW_CURSOR_BUTTONS.first, value ?: true)
         }
 
     var qwerty_show_keymap_symbols: Boolean?

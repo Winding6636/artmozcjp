@@ -629,7 +629,7 @@ private fun configureQwertyPreview(
         )
     )
     qwertyView.setSpecialKeyVisibility(
-        showCursors = appPreference.qwerty_show_cursor_buttons ?: false,
+        showCursors = appPreference.qwerty_show_cursor_buttons ?: true,
         showSwitchKey = appPreference.qwerty_show_ime_button ?: true,
         showKutouten = appPreference.qwerty_show_kutouten_buttons ?: false,
         showEmojiKey = appPreference.qwerty_show_emoji_button ?: false

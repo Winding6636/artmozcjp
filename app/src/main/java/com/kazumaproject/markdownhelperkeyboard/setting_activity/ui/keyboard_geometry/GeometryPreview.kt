@@ -439,7 +439,7 @@ internal class GeometryPreview(context: Context, private val keyboard: PreviewKe
             QwertyR.id.key_6, QwertyR.id.key_7, QwertyR.id.key_8, QwertyR.id.key_9, QwertyR.id.key_0)
         number.forEach { root.findViewById<View>(it).visibility = if (showNumber) VISIBLE else GONE }
         root.findViewById<View>(QwertyR.id.key_at_mark).visibility = GONE
-        listOf(QwertyR.id.cursor_left, QwertyR.id.cursor_right).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_cursor_buttons == true) VISIBLE else GONE }
+        listOf(QwertyR.id.cursor_left, QwertyR.id.cursor_right).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_cursor_buttons != false) VISIBLE else GONE }
         root.findViewById<View>(QwertyR.id.key_switch_default).visibility = if (AppPreference.qwerty_show_ime_button != false) VISIBLE else GONE
         root.findViewById<View>(QwertyR.id.key_emoji).visibility = if (AppPreference.qwerty_show_emoji_button == true) VISIBLE else GONE
         listOf(QwertyR.id.key_kuten, QwertyR.id.key_touten).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_kutouten_buttons == true) VISIBLE else GONE }

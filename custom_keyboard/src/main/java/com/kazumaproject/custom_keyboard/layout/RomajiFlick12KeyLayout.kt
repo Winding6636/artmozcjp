@@ -168,7 +168,7 @@ object RomajiFlick12KeyLayout {
 
     private fun cursorLeftKey() = specialKey(
         row = 1, column = 0, action = KeyAction.MoveCursorLeft,
-        drawable = com.kazumaproject.core.R.drawable.baseline_arrow_left_24,
+        drawable = com.kazumaproject.core.R.drawable.cursor_arrow_left_large,
     )
 
     private fun rightColumn(spaceRow: Int, enterRow: Int?): List<KeyData> = listOfNotNull(
@@ -179,7 +179,7 @@ object RomajiFlick12KeyLayout {
         if (enterRow != null) {
             specialKey(
                 row = 1, column = 4, action = KeyAction.MoveCursorRight,
-                drawable = com.kazumaproject.core.R.drawable.baseline_arrow_right_24,
+                drawable = com.kazumaproject.core.R.drawable.cursor_arrow_right_large,
             )
         } else {
             null
