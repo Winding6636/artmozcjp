@@ -205,6 +205,7 @@ class SuggestionAdapter internal constructor(
             is ClipboardPreviewViewHolder -> {
                 holder.clipboardPreviewText?.let { KeyboardFontApplicator.apply(it, keyboardFontSnapshot) }
                 holder.clipboardPreviewTextDescription?.let { KeyboardFontApplicator.apply(it, keyboardFontSnapshot) }
+                holder.clipboardSecondText?.let { KeyboardFontApplicator.apply(it, keyboardFontSnapshot) }
             }
             is CustomLayoutViewHolder -> KeyboardFontApplicator.apply(holder.nameTextView, keyboardFontSnapshot)
             // Icon-only shortcuts/actions and framework-owned inline suggestions keep their
@@ -234,6 +235,9 @@ class SuggestionAdapter internal constructor(
             }
         }
     }
+
+    private val SENSITIVE_CLIPBOARD_PLACEHOLDER = "********"
+    private val CLIPBOARD_PREVIEW_VISIBLE_CODE_POINTS = 3
 
     enum class HelperIcon {
         UNDO, REDO, RECONVERT, PASTE
@@ -1345,6 +1349,7 @@ class SuggestionAdapter internal constructor(
         val pasteSecondParent: ConstraintLayout? = itemView.findViewById(R.id.paste_second_parent)
         val clipboardSecondText: MaterialTextView? =
             itemView.findViewById(R.id.clipboard_second_text_preview)
+        val pasteSecondIcon: ImageView? = itemView.findViewById(R.id.paste_second_icon)
     }
 
     inner class CustomLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -2096,18 +2101,18 @@ class SuggestionAdapter internal constructor(
             val showSecond = state.clipboardBitmap == null && state.clipboardSecondText.isNotEmpty()
             clipboardPreviewText?.maxEms = if (showSecond) 5 else 8
             clipboardPreviewText?.text =
-                if (state.clipboardBitmap == null) state.clipboardText else ""
+                if (state.clipboardBitmap == null) maskClipboardPreview(state.clipboardText) else ""
             pasteSecondParent?.apply {
                 visibility = if (showSecond) View.VISIBLE else View.GONE
                 setOnClickListener {
                     onClipboardSecondClickListener?.invoke(state.clipboardSecondText)
                 }
             }
-            clipboardSecondText?.text = state.clipboardSecondText
+            clipboardSecondText?.text = maskClipboardPreview(state.clipboardSecondText)
             applyEmptyHelperButtonStyle(
                 parent = pasteSecondParent,
                 text = clipboardSecondText,
-                icon = null,
+                icon = pasteSecondIcon,
                 isDynamicColorEnable = isDynamicColorEnable,
             )
 
@@ -2129,6 +2134,15 @@ class SuggestionAdapter internal constructor(
                 }
             }
         }
+    }
+
+    private fun maskClipboardPreview(text: String): String {
+        if (text == SENSITIVE_CLIPBOARD_PLACEHOLDER) return text
+        val flattened = text.replace('\n', ' ').replace('\r', ' ')
+        val codePoints = flattened.codePointCount(0, flattened.length)
+        if (codePoints <= CLIPBOARD_PREVIEW_VISIBLE_CODE_POINTS) return flattened
+        val end = flattened.offsetByCodePoints(0, CLIPBOARD_PREVIEW_VISIBLE_CODE_POINTS)
+        return flattened.substring(0, end) + "…"
     }
 
     private fun CandidateStripContent.EmptyState.shouldCenterClipboardPreview(): Boolean {

@@ -3639,6 +3639,14 @@ object AppPreference {
         return "${surface}_${mode.name.lowercase(java.util.Locale.ROOT)}_${if (guide) "guide" else "key"}_text_size_sp"
     }
 
+    fun hasFlickKeyTextSizeSp(): Boolean = preferences.contains(FLICK_KEY_TEXT_SIZE_SP.first)
+
+    fun hasFlickSpecialKeyTextSizeSp(): Boolean =
+        preferences.contains(FLICK_SPECIAL_KEY_TEXT_SIZE_SP.first)
+
+    fun hasFlickGuideTextSizeSp(): Boolean =
+        preferences.contains(FLICK_GUIDE_TEXT_SIZE_SP_PREFERENCE.first)
+
     var flick_key_text_size_sp: Float?
         get() = preferences.getFloat(
             FLICK_KEY_TEXT_SIZE_SP.first,

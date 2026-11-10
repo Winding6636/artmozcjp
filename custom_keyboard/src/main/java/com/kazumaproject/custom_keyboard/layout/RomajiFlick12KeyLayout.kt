@@ -40,19 +40,46 @@ object RomajiFlick12KeyLayout {
     const val MODE_LABEL_JAPANESE = "あa\uD83C\uDF10"
     const val MODE_LABEL_ENGLISH = "ぁA\uD83C\uDF10"
 
-    private val digitRows = listOf(
-        listOf("1", "2", "3"),
-        listOf("4", "5", "6"),
-        listOf("7", "8", "9"),
-        listOf(",", "0", "."),
+    private val numberRows = listOf(
+        listOf("+", "1", "2", "3"),
+        listOf("-", "4", "5", "6"),
+        listOf(",", "7", "8", "9"),
+        listOf(".", "*", "0", "#"),
+    )
+
+    private fun emojiKey(row: Int, column: Int) = specialKey(
+        row = row, column = column, action = KeyAction.ShowEmojiKeyboard,
+        drawable = com.kazumaproject.core.R.drawable.baseline_emoji_emotions_24,
+    )
+
+    private fun modeKeyFlickMap(isRomaji: Boolean): Map<FlickDirection, FlickAction> = mapOf(
+        FlickDirection.TAP to FlickAction.Action(KeyAction.SwitchRomajiEnglish),
+        FlickDirection.UP to if (isRomaji) {
+            FlickAction.Action(KeyAction.SwitchToEnglishLayout, label = "A")
+        } else {
+            FlickAction.Action(KeyAction.SwitchToKanaLayout, label = "あ")
+        },
+        FlickDirection.UP_RIGHT_FAR to FlickAction.Action(
+            KeyAction.SwitchToNextIme,
+            drawableResId = com.kazumaproject.core.R.drawable.language_24dp,
+        ),
+        FlickDirection.UP_LEFT_FAR to FlickAction.Action(
+            KeyAction.ShowEmojiKeyboard,
+            drawableResId = com.kazumaproject.core.R.drawable.baseline_emoji_emotions_24,
+        ),
     )
 
     fun create(isRomaji: Boolean = true): KeyboardLayout {
-        val leftColumn = listOf(
+        val topLeft = if (isRomaji) {
+            emojiKey(row = 0, column = 0)
+        } else {
             specialKey(
-                row = 0, column = 0, action = KeyAction.ShowEmojiKeyboard,
-                drawable = com.kazumaproject.core.R.drawable.baseline_emoji_emotions_24,
-            ),
+                row = 0, column = 0, action = KeyAction.ShiftKey,
+                drawable = com.kazumaproject.core.R.drawable.shift_24px,
+            )
+        }
+        val leftColumn = listOf(
+            topLeft,
             cursorLeftKey(),
             KeyData(
                 label = "123", row = 2, column = 0, isFlickable = false,
@@ -77,22 +104,12 @@ object RomajiFlick12KeyLayout {
         val flickMaps = flickKeySpecs.associate { spec ->
             spec.center.uppercase() to listOf(spec.toFlickMap(isRomaji))
         } + mapOf(
-            MODE_KEY_ID to listOf(
-                mapOf(
-                    FlickDirection.TAP to FlickAction.Action(KeyAction.SwitchRomajiEnglish),
-                    FlickDirection.UP to FlickAction.Action(KeyAction.SwitchToEnglishLayout, label = "A"),
-                    FlickDirection.UP_RIGHT_FAR to FlickAction.Action(
-                        KeyAction.SwitchToNextIme,
-                        drawableResId = com.kazumaproject.core.R.drawable.language_24dp,
-                    ),
-                    FlickDirection.DOWN to FlickAction.Action(KeyAction.SwitchToKanaLayout, label = "あ"),
-                )
-            ),
+            MODE_KEY_ID to listOf(modeKeyFlickMap(isRomaji)),
             SPACE_KEY_ID to listOf(spaceFlickMap()),
         )
 
         return KeyboardLayout(
-            keys = leftColumn + rightColumn() + flickKeys,
+            keys = leftColumn + rightColumn(spaceRow = 2, enterRow = 3) + flickKeys,
             flickKeyMaps = flickMaps,
             columnCount = 5,
             rowCount = 4,
@@ -101,41 +118,50 @@ object RomajiFlick12KeyLayout {
     }
 
     fun createNumber(): KeyboardLayout {
-        val leftColumn = listOf(
-            specialKey(
-                row = 0, column = 0, action = KeyAction.ShowEmojiKeyboard,
-                drawable = com.kazumaproject.core.R.drawable.baseline_emoji_emotions_24,
-            ),
-            cursorLeftKey(),
-            KeyData(
-                label = "あA", row = 2, column = 0, isFlickable = false,
-                action = KeyAction.SwitchToKanaLayout, isSpecialKey = true,
-            ),
-            specialKey(
-                row = 3, column = 0, action = KeyAction.SwitchToNextIme,
-                drawable = com.kazumaproject.core.R.drawable.language_24dp,
-                keyId = "switch_next_ime",
-            ),
-        )
-
-        val digitKeys = digitRows.flatMapIndexed { row, labels ->
+        val symbolKeys = numberRows.flatMapIndexed { row, labels ->
             labels.mapIndexed { index, label ->
                 KeyData(
-                    label = label, row = row, column = index + 1, isFlickable = true,
+                    label = label, row = row, column = index, isFlickable = true,
                     keyType = KeyType.STANDARD_FLICK,
                 )
             }
+        } + listOf("/", "=").mapIndexed { index, label ->
+            KeyData(
+                label = label, row = index + 1, column = 4, isFlickable = true,
+                keyType = KeyType.STANDARD_FLICK,
+            )
         }
 
-        val flickMaps = digitRows.flatten().associateWith { label ->
+        val bottomBar = listOf(
+            KeyData(
+                label = "あいう", row = 4, column = 0, isFlickable = false,
+                action = KeyAction.SwitchToKanaLayout, isSpecialKey = true,
+            ),
+            KeyData(
+                label = "123", row = 4, column = 1, isFlickable = false,
+                action = KeyAction.DoNothing, isSpecialKey = true, isHiLighted = true,
+            ),
+            emojiKey(row = 4, column = 2),
+            specialKey(
+                row = 4, column = 3, action = KeyAction.SwitchToNextIme,
+                drawable = com.kazumaproject.core.R.drawable.language_24dp,
+                keyId = "switch_next_ime",
+            ),
+            specialKey(
+                row = 4, column = 4, action = KeyAction.Enter,
+                drawable = com.kazumaproject.core.R.drawable.baseline_keyboard_return_24,
+            ),
+        )
+
+        val flickMaps = (numberRows.flatten() + listOf("/", "=")).associateWith { label ->
             listOf(mapOf<FlickDirection, FlickAction>(FlickDirection.TAP to FlickAction.Input(label)))
         } + mapOf(SPACE_KEY_ID to listOf(spaceFlickMap()))
 
         return KeyboardLayout(
-            keys = leftColumn + rightColumn() + digitKeys,
+            keys = rightColumn(spaceRow = 3, enterRow = null) + symbolKeys + bottomBar,
             flickKeyMaps = flickMaps,
             columnCount = 5,
-            rowCount = 4,
+            rowCount = 5,
             isRomaji = true,
         )
     }
@@ -145,24 +171,32 @@ object RomajiFlick12KeyLayout {
         drawable = com.kazumaproject.core.R.drawable.baseline_arrow_left_24,
     )
 
-    private fun rightColumn() = listOf(
+    private fun rightColumn(spaceRow: Int, enterRow: Int?): List<KeyData> = listOfNotNull(
         specialKey(
             row = 0, column = 4, action = KeyAction.Delete,
             drawable = com.kazumaproject.core.R.drawable.backspace_24px,
         ),
-        specialKey(
-            row = 1, column = 4, action = KeyAction.MoveCursorRight,
-            drawable = com.kazumaproject.core.R.drawable.baseline_arrow_right_24,
-        ),
+        if (enterRow != null) {
+            specialKey(
+                row = 1, column = 4, action = KeyAction.MoveCursorRight,
+                drawable = com.kazumaproject.core.R.drawable.baseline_arrow_right_24,
+            )
+        } else {
+            null
+        },
         KeyData(
-            label = "", row = 2, column = 4, isFlickable = false, isSpecialKey = true,
+            label = "", row = spaceRow, column = 4, isFlickable = false, isSpecialKey = true,
             drawableResId = com.kazumaproject.core.R.drawable.baseline_space_bar_24,
             keyId = SPACE_KEY_ID, keyType = KeyType.CROSS_FLICK,
         ),
-        specialKey(
-            row = 3, column = 4, action = KeyAction.Enter,
-            drawable = com.kazumaproject.core.R.drawable.baseline_keyboard_return_24,
-        ),
+        if (enterRow != null) {
+            specialKey(
+                row = enterRow, column = 4, action = KeyAction.Enter,
+                drawable = com.kazumaproject.core.R.drawable.baseline_keyboard_return_24,
+            )
+        } else {
+            null
+        },
     )
 
     private fun spaceFlickMap(): Map<FlickDirection, FlickAction> = mapOf(

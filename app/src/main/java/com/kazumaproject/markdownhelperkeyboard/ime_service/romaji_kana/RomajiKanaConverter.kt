@@ -414,6 +414,15 @@ class RomajiKanaConverter(private val romajiToKana: Map<String, Pair<String, Int
                 continue
             }
 
+            if (currentChar == 'n' &&
+                i + 1 < normalizedText.length &&
+                normalizedText[i + 1] in "bcdfghjklmpqrstvwxz"
+            ) {
+                result.append("ん")
+                i++
+                continue
+            }
+
             // Rule 3: Longest match lookup
             var matched = false
             // Iterate from the longest possible key length down to 1

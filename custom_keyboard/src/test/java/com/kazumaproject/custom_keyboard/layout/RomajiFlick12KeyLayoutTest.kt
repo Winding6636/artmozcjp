@@ -148,16 +148,28 @@ class RomajiFlick12KeyLayoutTest {
     }
 
     @Test
-    fun modeKeyCyclesOnTapAndJumpsByFlickDirection() {
+    fun modeKeyCyclesOnTapAndJumpsToTheOtherLanguageOnUp() {
         assertEquals(
             mapOf(
                 FlickDirection.TAP to KeyAction.SwitchRomajiEnglish,
                 FlickDirection.UP to KeyAction.SwitchToEnglishLayout,
                 FlickDirection.UP_RIGHT_FAR to KeyAction.SwitchToNextIme,
-                FlickDirection.DOWN to KeyAction.SwitchToKanaLayout,
+                FlickDirection.UP_LEFT_FAR to KeyAction.ShowEmojiKeyboard,
             ),
             actions(layout, RomajiFlick12KeyLayout.MODE_KEY_ID),
         )
+        val english = RomajiFlick12KeyLayout.create(isRomaji = false)
+        assertEquals(
+            KeyAction.SwitchToKanaLayout,
+            actions(english, RomajiFlick12KeyLayout.MODE_KEY_ID).getValue(FlickDirection.UP),
+        )
+    }
+
+    @Test
+    fun englishLayoutPutsShiftWhereJapaneseHasEmoji() {
+        val english = RomajiFlick12KeyLayout.create(isRomaji = false)
+        assertEquals(KeyAction.ShiftKey, english.keys.single { it.row == 0 && it.column == 0 }.action)
+        assertEquals(KeyAction.ShowEmojiKeyboard, keyAt(0, 0).action)
     }
 
     @Test
@@ -197,17 +209,40 @@ class RomajiFlick12KeyLayoutTest {
     }
 
     @Test
-    fun numberLayoutHasTenDigitsAndAKeyBackToLetters() {
+    fun numberLayoutFollowsTheOriginalArrangementWithABottomBar() {
         val number = RomajiFlick12KeyLayout.createNumber()
+        assertEquals(5, number.rowCount)
         fun at(row: Int, column: Int) = number.keys.single { it.row == row && it.column == column }
         assertEquals(
-            listOf(listOf("1", "2", "3"), listOf("4", "5", "6"), listOf("7", "8", "9"), listOf(",", "0", ".")),
-            (0..3).map { row -> (1..3).map { column -> at(row, column).label } },
+            listOf(
+                listOf("+", "1", "2", "3"),
+                listOf("-", "4", "5", "6"),
+                listOf(",", "7", "8", "9"),
+                listOf(".", "*", "0", "#"),
+            ),
+            (0..3).map { row -> (0..3).map { column -> at(row, column).label } },
         )
+        assertEquals(listOf("/", "="), (1..2).map { at(it, 4).label })
+        assertEquals(KeyAction.Delete, at(0, 4).action)
+        assertEquals(RomajiFlick12KeyLayout.SPACE_KEY_ID, at(3, 4).keyId)
         number.keys.filter { it.keyType == KeyType.STANDARD_FLICK }.forEach { key ->
             val tap = number.flickKeyMaps.getValue(key.label).single().getValue(FlickDirection.TAP)
             assertEquals(key.label, (tap as FlickAction.Input).char)
         }
-        assertEquals(KeyAction.SwitchToKanaLayout, at(2, 0).action)
+    }
+
+    @Test
+    fun numberBottomBarHasBackEmojiGlobeAndEnter() {
+        val number = RomajiFlick12KeyLayout.createNumber()
+        assertEquals(
+            listOf(
+                KeyAction.SwitchToKanaLayout,
+                KeyAction.DoNothing,
+                KeyAction.ShowEmojiKeyboard,
+                KeyAction.SwitchToNextIme,
+                KeyAction.Enter,
+            ),
+            (0..4).map { column -> number.keys.single { it.row == 4 && it.column == column }.action },
+        )
     }
 }
