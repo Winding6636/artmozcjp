@@ -15274,6 +15274,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private val ROMAJI_FLICK12_MIN_KEY_TEXT_SP = 22f
     private val ROMAJI_FLICK12_MIN_SPECIAL_KEY_TEXT_SP = 16f
     private val ROMAJI_FLICK12_MIN_GUIDE_TEXT_SP = 11
+    private val ROMAJI_FLICK12_MIN_HEIGHT_DP = 280
     private var isCustomLayoutDirectMode = false
     private var customKeyboardShiftState = CustomKeyboardShiftState.OFF
     private var softwareModifiers = SoftwareModifiers()
@@ -21043,6 +21044,13 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     }
 
     private fun getKeyboardSizePreferences(mode: TenKeyQWERTYMode = qwertyMode.value): KeyboardSizePreferences {
+        val prefs = resolveKeyboardSizePreferences(mode)
+        val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        if (!isRomajiFlick12Active || mode != TenKeyQWERTYMode.Custom || !isPortrait) return prefs
+        return prefs.copy(heightPref = maxOf(prefs.heightPref, ROMAJI_FLICK12_MIN_HEIGHT_DP))
+    }
+
+    private fun resolveKeyboardSizePreferences(mode: TenKeyQWERTYMode): KeyboardSizePreferences {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val legacy = if (isPortrait) {
             KeyboardSizePreferences(

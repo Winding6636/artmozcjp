@@ -37,6 +37,8 @@ object RomajiFlick12KeyLayout {
 
     const val MODE_KEY_ID = "romaji_flick12_mode"
     const val SPACE_KEY_ID = "romaji_flick12_space"
+    const val MODE_LABEL_JAPANESE = "あa\uD83C\uDF10"
+    const val MODE_LABEL_ENGLISH = "ぁA\uD83C\uDF10"
 
     private val digitRows = listOf(
         listOf("1", "2", "3"),
@@ -57,7 +59,7 @@ object RomajiFlick12KeyLayout {
                 action = KeyAction.SwitchToNumberLayout, isSpecialKey = true,
             ),
             KeyData(
-                label = if (isRomaji) "あ" else "A", row = 3, column = 0, isFlickable = false,
+                label = if (isRomaji) MODE_LABEL_JAPANESE else MODE_LABEL_ENGLISH, row = 3, column = 0, isFlickable = false,
                 isSpecialKey = true, keyId = MODE_KEY_ID, keyType = KeyType.CROSS_FLICK,
             ),
         )

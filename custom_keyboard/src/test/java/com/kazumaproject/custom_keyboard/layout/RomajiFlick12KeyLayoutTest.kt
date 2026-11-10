@@ -161,10 +161,10 @@ class RomajiFlick12KeyLayoutTest {
     }
 
     @Test
-    fun modeKeyLabelShowsTheCurrentInputLanguage() {
-        assertEquals("あ", keyAt(3, 0).label)
+    fun modeKeyLabelListsAllThreeTargetsAndEnlargesTheCurrentLanguage() {
+        assertEquals("あa\uD83C\uDF10", keyAt(3, 0).label)
         val english = RomajiFlick12KeyLayout.create(isRomaji = false)
-        assertEquals("A", english.keys.single { it.row == 3 && it.column == 0 }.label)
+        assertEquals("ぁA\uD83C\uDF10", english.keys.single { it.row == 3 && it.column == 0 }.label)
         assertEquals(false, english.isRomaji)
     }
 
