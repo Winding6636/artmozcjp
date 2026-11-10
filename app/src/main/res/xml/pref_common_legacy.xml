@@ -496,6 +496,11 @@
             android:key="app_version_preference"
             android:title="@string/app_version_title" />
 
+        <Preference
+            android:selectable="false"
+            android:summary="@string/modified_edition_summary"
+            android:title="@string/modified_edition_title" />
+
     </com.kazumaproject.markdownhelperkeyboard.setting_activity.ui.setting.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>

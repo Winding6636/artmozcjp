@@ -594,6 +594,8 @@
 
     <string name="open_source_libraries_title">使用した Open Source のライブラリ</string>
     <string name="app_version_title">アプリのバージョン</string>
+    <string name="modified_edition_title">改変版について</string>
+    <string name="modified_edition_summary">このアプリは Sumire（KazumaProject、MIT License）を改変した非公式版です。12キーのローマ字フリック配列を追加しています。本家の開発者によるサポート対象ではありません。</string>
 
     <string name="learn_dictionary_prefix_match_summary">読みを %1$d 文字以上入力すると、学習辞書の単語を予測候補に表示します</string>
 

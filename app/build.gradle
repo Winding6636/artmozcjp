@@ -34,6 +34,7 @@ android {
         targetSdk 37
         versionCode 833
         versionName "1.7.140"
+        versionNameSuffix "-mod.arte"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

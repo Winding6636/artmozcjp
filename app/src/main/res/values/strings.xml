@@ -638,6 +638,8 @@
 
     <string name="open_source_libraries_title">Open Source libraries used</string>
     <string name="app_version_title">App version</string>
+    <string name="modified_edition_title">About this modified edition</string>
+    <string name="modified_edition_summary">This app is an unofficial modified edition of Sumire (KazumaProject, MIT License) that adds a 12-key romaji flick layout. It is not supported by the original developer.</string>
 
     <string name="learn_dictionary_prefix_match_summary">Shows words registered in the learn dictionary as conversion candidates with a prefix match of %1$d characters</string>
 
