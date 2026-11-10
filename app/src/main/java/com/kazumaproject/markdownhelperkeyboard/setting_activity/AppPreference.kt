@@ -372,7 +372,7 @@ object AppPreference {
         Pair("qwerty_show_keymap_symbols_romaji_preference", false)
 
     private val QWERTY_SHOW_NUMBER_BUTTONS =
-        Pair("qwerty_show_number_keys_buttons_preference", false)
+        Pair("qwerty_show_number_keys_buttons_preference", true)
 
     private val QWERTY_NUMBER_KEY_FLICK_UP_CHARS =
         Pair("qwerty_number_key_flick_up_chars", "{}")

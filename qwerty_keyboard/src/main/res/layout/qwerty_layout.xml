@@ -818,7 +818,7 @@
         android:textSize="@dimen/qwerty_side_key_switch_mode_text_size"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/key_123"
+        app:layout_constraintEnd_toStartOf="@id/key_switch_default"
         app:layout_constraintHorizontal_weight="0.75"
         app:layout_constraintStart_toEndOf="@id/switch_romaji_english"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
@@ -836,9 +836,9 @@
         android:textColor="@color/keyboard_icon_color"
         android:textSize="@dimen/qwerty_side_key_switch_mode_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/key_emoji"
+        app:layout_constraintEnd_toStartOf="@id/key_touten"
         app:layout_constraintHorizontal_weight="0.75"
-        app:layout_constraintStart_toEndOf="@id/switch_number_layout"
+        app:layout_constraintStart_toEndOf="@id/key_emoji"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -855,9 +855,9 @@
         android:tint="@color/keyboard_icon_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/key_switch_default"
+        app:layout_constraintEnd_toStartOf="@id/key_123"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/key_123"
+        app:layout_constraintStart_toEndOf="@id/key_switch_default"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -872,9 +872,9 @@
         android:src="@drawable/language_24dp"
         android:tint="@color/keyboard_icon_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/key_touten"
+        app:layout_constraintEnd_toStartOf="@id/key_emoji"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/key_emoji"
+        app:layout_constraintStart_toEndOf="@id/switch_number_layout"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <com.kazumaproject.qwerty_keyboard.ui.QWERTYButton
@@ -892,7 +892,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/key_space"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/key_switch_default"
+        app:layout_constraintStart_toEndOf="@id/key_123"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <com.kazumaproject.qwerty_keyboard.ui.QWERTYButton

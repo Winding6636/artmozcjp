@@ -59,7 +59,7 @@
             android:title="@string/qwerty_show_kutouten_buttons_title" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="qwerty_show_number_keys_buttons_preference"
             android:summaryOff="@string/qwerty_number_keys_summary_off"
             android:summaryOn="@string/qwerty_number_keys_summary_on"

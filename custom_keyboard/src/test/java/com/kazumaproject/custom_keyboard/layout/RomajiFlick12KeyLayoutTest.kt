@@ -179,13 +179,14 @@ class RomajiFlick12KeyLayoutTest {
     }
 
     @Test
-    fun spaceKeyEntersFullWidthOnUpAndHalfWidthOnDown() {
+    fun spaceKeyEntersFullWidthOnUpHalfWidthOnLeftAndConvertsToKatakanaOnDown() {
         assertEquals(RomajiFlick12KeyLayout.SPACE_KEY_ID, keyAt(2, 4).keyId)
         assertEquals(
             mapOf(
                 FlickDirection.TAP to KeyAction.Space,
                 FlickDirection.UP to KeyAction.ForceFullWidthSpace,
-                FlickDirection.DOWN to KeyAction.ForceHalfWidthSpace,
+                FlickDirection.UP_LEFT_FAR to KeyAction.ForceHalfWidthSpace,
+                FlickDirection.DOWN to KeyAction.ToggleKatakana,
             ),
             actions(layout, RomajiFlick12KeyLayout.SPACE_KEY_ID),
         )

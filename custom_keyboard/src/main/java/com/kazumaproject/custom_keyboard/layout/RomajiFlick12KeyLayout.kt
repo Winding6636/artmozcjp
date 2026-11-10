@@ -166,7 +166,8 @@ object RomajiFlick12KeyLayout {
     private fun spaceFlickMap(): Map<FlickDirection, FlickAction> = mapOf(
         FlickDirection.TAP to FlickAction.Action(KeyAction.Space),
         FlickDirection.UP to FlickAction.Action(KeyAction.ForceFullWidthSpace, label = "全角"),
-        FlickDirection.DOWN to FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"),
+        FlickDirection.UP_LEFT_FAR to FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"),
+        FlickDirection.DOWN to FlickAction.Action(KeyAction.ToggleKatakana, label = "カナ"),
     )
 
     private fun specialKey(

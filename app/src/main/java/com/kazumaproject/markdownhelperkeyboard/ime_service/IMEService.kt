@@ -11329,10 +11329,18 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             appPreference.flick_key_width_scale_percent ?: 160,
             appPreference.flick_key_height_scale_percent ?: 160,
             appPreference.flick_key_icon_scale_percent ?: 80,
-            appPreference.flick_key_text_size_sp ?: 16f,
-            appPreference.flick_special_key_text_size_sp ?: 12f
+            (appPreference.flick_key_text_size_sp ?: 16f).let {
+                if (isRomajiFlick12Active) maxOf(it, ROMAJI_FLICK12_MIN_KEY_TEXT_SP) else it
+            },
+            (appPreference.flick_special_key_text_size_sp ?: 12f).let {
+                if (isRomajiFlick12Active) maxOf(it, ROMAJI_FLICK12_MIN_SPECIAL_KEY_TEXT_SP) else it
+            }
         )
-        flickView.setFlickGuideTextSizeSp((flickGuideTextSizeSpPreference ?: 9).coerceIn(6, 16).toFloat())
+        flickView.setFlickGuideTextSizeSp(
+            (flickGuideTextSizeSpPreference ?: 9).let {
+                if (isRomajiFlick12Active) maxOf(it, ROMAJI_FLICK12_MIN_GUIDE_TEXT_SP) else it
+            }.coerceIn(6, 16).toFloat()
+        )
         flickView.setKeyboard(
             if (isUserDefinedCustomLayout) KeyboardDefaultLayouts.applyDeleteKeyFlickSettings(
                 layout, currentDeleteKeyFlickSettings().copy(down = true)
@@ -15263,6 +15271,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
 
     private var isCustomLayoutRomajiMode = false
     private var isRomajiFlick12Active = false
+    private val ROMAJI_FLICK12_MIN_KEY_TEXT_SP = 22f
+    private val ROMAJI_FLICK12_MIN_SPECIAL_KEY_TEXT_SP = 16f
+    private val ROMAJI_FLICK12_MIN_GUIDE_TEXT_SP = 11
     private var isCustomLayoutDirectMode = false
     private var customKeyboardShiftState = CustomKeyboardShiftState.OFF
     private var softwareModifiers = SoftwareModifiers()
