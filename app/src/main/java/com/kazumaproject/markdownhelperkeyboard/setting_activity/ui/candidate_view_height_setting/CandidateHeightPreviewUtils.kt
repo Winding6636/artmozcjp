@@ -28,6 +28,7 @@ import com.kazumaproject.custom_keyboard.data.KeyActionMapper
 import com.kazumaproject.custom_keyboard.data.KeyboardInputMode
 import com.kazumaproject.custom_keyboard.data.KeyboardLayout
 import com.kazumaproject.custom_keyboard.layout.KeyboardDefaultLayouts
+import com.kazumaproject.custom_keyboard.layout.RomajiFlick12KeyLayout
 import com.kazumaproject.custom_keyboard.view.FlickKeyboardView
 import com.kazumaproject.custom_keyboard.view.KeyHitTestMode
 import com.kazumaproject.gojuon_keyboard.GojuonKeyboardView
@@ -317,6 +318,21 @@ private fun renderNonCustomKeyboardPreviewType(
                 )
                 views.flick.setKeyboard(layout, KeyHitTestMode.NEAREST_KEY)
             }
+        }
+
+        KeyboardType.ROMAJI_FLICK12 -> {
+            views.flick.isVisible = true
+            configureFlickKeyboardPreview(
+                context = fragment.requireContext(),
+                appPreference = appPreference,
+                flickView = views.flick,
+                guideEnabled = appPreference.flick_keymap_guide_layout ?: false,
+                allowMultiCharacterGuideLabels = false
+            )
+            views.flick.clearSumireSpecialKeyActionResolver()
+            views.flick.setKeyboard(
+                applyDeleteKeyFlickPreferences(appPreference, RomajiFlick12KeyLayout.create())
+            )
         }
 
         KeyboardType.CUSTOM -> Unit

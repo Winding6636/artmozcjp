@@ -208,6 +208,7 @@ import com.kazumaproject.custom_keyboard.data.KeyboardLayoutUsageMode
 import com.kazumaproject.custom_keyboard.data.SumireFlickInputMode
 import com.kazumaproject.custom_keyboard.data.TfbiFlickRotation
 import com.kazumaproject.custom_keyboard.layout.KeyboardDefaultLayouts
+import com.kazumaproject.custom_keyboard.layout.RomajiFlick12KeyLayout
 import com.kazumaproject.custom_keyboard.layout.KeyboardDefaultLayouts.DeleteKeyFlickSettings
 import com.kazumaproject.custom_keyboard.view.FlickKeyboardView
 import com.kazumaproject.custom_keyboard.view.KeyHitTestMode
@@ -2893,7 +2894,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         KeyboardType.QWERTY -> TenKeyQWERTYMode.TenKeyQWERTY
         KeyboardType.ROMAJI -> TenKeyQWERTYMode.TenKeyQWERTYRomaji
         KeyboardType.SUMIRE -> TenKeyQWERTYMode.Sumire
-        KeyboardType.CUSTOM -> TenKeyQWERTYMode.Custom
+        KeyboardType.CUSTOM, KeyboardType.ROMAJI_FLICK12 -> TenKeyQWERTYMode.Custom
     }
 
     private fun saveSplitInput(slot: SplitSlot) {
@@ -11522,6 +11523,15 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             return
         }
         applyCurrentFlickGuidePreference(flickView)
+        if (isRomajiFlick12Active) {
+            setKeyboardWithDeleteKeyFlickPreferences(
+                flickView,
+                RomajiFlick12KeyLayout.create(),
+                isUserDefinedCustomLayout = true
+            )
+            syncCustomKeyboardTogglePresentation(flickView)
+            return
+        }
         val layout = selectedCustomKeyboardLayoutOrNull() ?: return
         scope.launch(Dispatchers.IO) {
             val id = layout.layoutId
@@ -14284,7 +14294,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                                 setCurrentInputModeForSession(InputMode.ModeJapanese)
                             }
 
-                            KeyboardType.SUMIRE -> {
+                            KeyboardType.SUMIRE,
+                            KeyboardType.ROMAJI_FLICK12 -> {
                                 setCurrentInputModeForSession(InputMode.ModeJapanese)
                             }
 
@@ -14818,6 +14829,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private fun showResolvedKeyboard(type: KeyboardType) {
         if (type == KeyboardType.SPLIT) { startSplitKeyboard(); return }
         stopSplitKeyboard(restoreSurface = true)
+        isRomajiFlick12Active = type == KeyboardType.ROMAJI_FLICK12
         if (qwertyMode.value == TenKeyQWERTYMode.Custom) resetCustomToggleState()
         hideAllKeyboards()
         Timber.d("showKeyboard called: resolved=$type")
@@ -14979,6 +14991,20 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
                 }
 
+                KeyboardType.ROMAJI_FLICK12 -> {
+                    if (qwertyMode.value != TenKeyQWERTYMode.Number) {
+                        clearQwertySwitchNumberKeyReturnSource()
+                        _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Custom }
+                        applyRomajiFlick12Layout()
+                    } else {
+                        setNumberLayoutTo(customLayoutDefault)
+                    }
+                    customLayoutDefault.isVisible = true
+                    setCurrentInputModeForSession(InputMode.ModeJapanese)
+                    qwertyView.isVisible = false
+                    keyboardView.isVisible = false
+                }
+
                 KeyboardType.CUSTOM -> {
                     Timber.d("updateKeyboardLayout CUSTOM: $isFlickOnlyMode $sumireInputKeyType")
                     if (!selectInitialCustomKeyboardTab()) {
@@ -15048,6 +15074,15 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
     }
 
+    private fun applyRomajiFlick12Layout() {
+        isCustomLayoutRomajiMode = true
+        isCustomLayoutDirectMode = false
+        customKeyboardShiftState = CustomKeyboardShiftState.OFF
+        getActiveKeyboardSurface()?.customLayout?.let(::applyCurrentFlickGuidePreference)
+        setCustomLayoutOnAvailableSurfaces(RomajiFlick12KeyLayout.create())
+        syncCustomKeyboardTogglePresentationOnAvailableSurfaces()
+    }
+
     private fun createNewKeyboardLayoutForSumire() {
         Timber.d("updateKeyboardLayout: ${qwertyMode.value} $currentEnterKeyIndex")
         when (qwertyMode.value) {
@@ -15057,7 +15092,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 when (customKeyboardMode) {
                     KeyboardInputMode.HIRAGANA -> {
                         mainLayoutBinding?.let { mainView ->
-                            if (!selectInitialCustomKeyboardTab()) {
+                            if (isRomajiFlick12Active) {
+                                applyRomajiFlick12Layout()
+                            } else if (!selectInitialCustomKeyboardTab()) {
                                 fallbackFromCustomKeyboardIfNeeded()
                                 return@let
                             }
@@ -15167,6 +15204,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     }
 
     private var isCustomLayoutRomajiMode = false
+    private var isRomajiFlick12Active = false
     private var isCustomLayoutDirectMode = false
     private var customKeyboardShiftState = CustomKeyboardShiftState.OFF
     private var softwareModifiers = SoftwareModifiers()
@@ -15211,7 +15249,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         if (appPreference.remember_custom_keyboard_input_mode_preference != true) {
             return
         }
-        if (qwertyMode.value != TenKeyQWERTYMode.Custom) {
+        if (qwertyMode.value != TenKeyQWERTYMode.Custom || isRomajiFlick12Active) {
             return
         }
         val layout = selectedCustomKeyboardLayoutOrNull() ?: return
@@ -15477,6 +15515,10 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             activeSplitSlot = null
             active?.let(::activateSplitInput)
             scheduleSplitCandidates()
+            return
+        }
+        if (isRomajiFlick12Active) {
+            customLayouts = newLayouts
             return
         }
         val selectedStableId = currentCustomKeyboardStableIdCandidate()
@@ -19840,7 +19882,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
 
                     TenKeyQWERTYMode.Custom -> {
-                        if (customLayouts.isEmpty()) {
+                        if (isRomajiFlick12Active) {
+                            suggestionAdapter?.updateState(TenKeyQWERTYMode.Custom, emptyList())
+                        } else if (customLayouts.isEmpty()) {
                             clearCurrentCustomKeyboardSelection()
                             fallbackFromCustomKeyboardIfNeeded()
                             return@collectLatest
@@ -23622,7 +23666,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             KeyboardType.SUMIRE -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Sumire }
             KeyboardType.QWERTY -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.TenKeyQWERTY }
             KeyboardType.ROMAJI -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.TenKeyQWERTYRomaji }
-            KeyboardType.CUSTOM -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Custom }
+            KeyboardType.CUSTOM, KeyboardType.ROMAJI_FLICK12 -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Custom }
             KeyboardType.SPLIT -> _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Default }
         }
     }
@@ -31195,7 +31239,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 setCurrentInputModeForSession(InputMode.ModeJapanese)
             }
 
-            KeyboardType.SUMIRE -> {
+            KeyboardType.SUMIRE,
+            KeyboardType.ROMAJI_FLICK12 -> {
                 setCurrentInputModeForSession(InputMode.ModeJapanese)
             }
 
@@ -31229,7 +31274,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 KeyboardType.SUMIRE -> TenKeyQWERTYMode.Sumire
                 KeyboardType.QWERTY -> TenKeyQWERTYMode.TenKeyQWERTY
                 KeyboardType.ROMAJI -> TenKeyQWERTYMode.TenKeyQWERTYRomaji
-                KeyboardType.CUSTOM -> TenKeyQWERTYMode.Custom
+                KeyboardType.CUSTOM, KeyboardType.ROMAJI_FLICK12 -> TenKeyQWERTYMode.Custom
                 KeyboardType.SPLIT -> TenKeyQWERTYMode.Default
             }
             _tenKeyQWERTYMode.update { type }
