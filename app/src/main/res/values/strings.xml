@@ -1841,6 +1841,7 @@
     <string name="keyboard_type_qwerty">English (QWERTY)</string>
     <string name="keyboard_type_romaji">Japanese – Romaji</string>
     <string name="keyboard_type_romaji_flick12">Japanese – Romaji 12-key flick</string>
+    <string name="romaji_flick12_keymap_guide_summary">Shows the characters you can enter by flicking, around each key.</string>
     <string name="keyboard_type_custom">Custom – User defined</string>
     <string name="custom_romaji_behavior_scope">Software keyboard conversion (this map only)</string>
     <string name="custom_romaji_auto_sokuon">Convert repeated consonants to small tsu</string>

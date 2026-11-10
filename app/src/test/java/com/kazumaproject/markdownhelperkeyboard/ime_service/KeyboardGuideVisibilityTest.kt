@@ -57,6 +57,32 @@ class KeyboardGuideVisibilityTest {
     }
 
     @Test
+    fun romajiFlick12Surface_showsGuideByDefaultRegardlessOfCustomSetting() {
+        val config = resolveFlickGuideRuntimeConfig(
+            FlickGuideSurface.RomajiFlick12,
+            KeyboardInputMode.HIRAGANA,
+            sumireSettings,
+            customGuideEnabled = false
+        )
+
+        assertTrue(config.enabled)
+        assertFalse(config.allowMultiCharacterLabels)
+    }
+
+    @Test
+    fun romajiFlick12Surface_hidesGuideWhenItsOwnSettingIsOff() {
+        val config = resolveFlickGuideRuntimeConfig(
+            FlickGuideSurface.RomajiFlick12,
+            KeyboardInputMode.HIRAGANA,
+            sumireSettings,
+            customGuideEnabled = true,
+            romajiFlick12GuideEnabled = false
+        )
+
+        assertFalse(config.enabled)
+    }
+
+    @Test
     fun qwertyOrOtherSurface_neverAppliesSumireGuide() {
         KeyboardInputMode.entries.forEach { mode ->
             assertEquals(

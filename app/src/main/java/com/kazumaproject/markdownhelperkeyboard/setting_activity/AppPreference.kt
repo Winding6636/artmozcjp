@@ -340,6 +340,8 @@ object AppPreference {
 
     private val FLICK_KEYMAP_GUIDE_PREFERENCE =
         Pair(CUSTOM_KEYMAP_GUIDE_KEY, false)
+    private val ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE =
+        Pair("romaji_flick12_keymap_guide", true)
     private val SUMIRE_KEYMAP_GUIDE_JAPANESE_PREFERENCE =
         Pair(SUMIRE_KEYMAP_GUIDE_JAPANESE_KEY, false)
     private val SUMIRE_KEYMAP_GUIDE_ENGLISH_PREFERENCE =
@@ -1478,6 +1480,15 @@ object AppPreference {
         )
         set(value) = preferences.edit {
             it.putBoolean(FLICK_KEYMAP_GUIDE_PREFERENCE.first, value ?: false)
+        }
+
+    var romaji_flick12_keymap_guide: Boolean
+        get() = preferences.getBoolean(
+            ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE.first,
+            ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE.second
+        )
+        set(value) = preferences.edit {
+            it.putBoolean(ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE.first, value)
         }
 
     var sumire_keymap_guide_japanese: Boolean

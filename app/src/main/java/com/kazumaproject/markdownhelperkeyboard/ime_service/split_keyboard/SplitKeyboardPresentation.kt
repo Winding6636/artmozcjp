@@ -2,6 +2,7 @@ package com.kazumaproject.markdownhelperkeyboard.ime_service.split_keyboard
 
 import android.graphics.drawable.Drawable
 import com.kazumaproject.custom_keyboard.data.KeyAction
+import com.kazumaproject.custom_keyboard.data.KeyCharacterCase
 import com.kazumaproject.custom_keyboard.view.FlickKeyboardView
 import com.kazumaproject.markdownhelperkeyboard.ime_service.CustomKeyboardShiftState
 import com.kazumaproject.core.domain.state.InputMode
@@ -99,8 +100,9 @@ internal fun renderCustomKeyboardToggles(
     shift: CustomKeyboardShiftState,
     direct: Boolean,
     romaji: Boolean,
+    keyCharacterCase: KeyCharacterCase = shift.keyCharacterCase,
 ) {
-    flickView.setKeyCharacterCase(shift.keyCharacterCase)
+    flickView.setKeyCharacterCase(keyCharacterCase)
     flickView.updateKeyIconByAction(
         KeyAction.SwitchDirectMode,
         if (direct) {

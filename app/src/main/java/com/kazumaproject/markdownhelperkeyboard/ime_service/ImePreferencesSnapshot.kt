@@ -177,6 +177,7 @@ data class ImePreferencesSnapshot(
     val sumireEnglishKeymapGuide: Boolean,
     val sumireNumberKeymapGuide: Boolean,
     val customKeymapGuide: Boolean,
+    val romajiFlick12KeymapGuide: Boolean = true,
     val flickGuideTextSizeSp: Int,
     val flickGuideMaxCharacters: Int,
     val isKeyboardFloatingMode: Boolean,
@@ -569,6 +570,7 @@ data class ImePreferencesSnapshot(
                 sumireEnglishKeymapGuide = appPreference.sumire_keymap_guide_english,
                 sumireNumberKeymapGuide = appPreference.sumire_keymap_guide_number,
                 customKeymapGuide = appPreference.flick_keymap_guide_layout ?: false,
+                romajiFlick12KeymapGuide = appPreference.romaji_flick12_keymap_guide,
                 flickGuideTextSizeSp = appPreference.flick_guide_text_size_sp_preference ?: 9,
                 flickGuideMaxCharacters =
                     appPreference.flick_guide_max_characters_preference ?: 1,

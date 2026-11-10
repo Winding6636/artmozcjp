@@ -326,7 +326,7 @@ private fun renderNonCustomKeyboardPreviewType(
                 context = fragment.requireContext(),
                 appPreference = appPreference,
                 flickView = views.flick,
-                guideEnabled = appPreference.flick_keymap_guide_layout ?: false,
+                guideEnabled = appPreference.romaji_flick12_keymap_guide,
                 allowMultiCharacterGuideLabels = false
             )
             views.flick.clearSumireSpecialKeyActionResolver()

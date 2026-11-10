@@ -746,6 +746,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private var tenkeyKeymapGuideSettings = ModeKeymapGuideSettings()
     private var sumireKeymapGuideSettings = ModeKeymapGuideSettings()
     private var customKeymapGuidePreference: Boolean = false
+    private var romajiFlick12KeymapGuidePreference: Boolean = true
     private var flickGuideTextSizeSpPreference: Int? = 9
     private var flickGuideMaxCharactersPreference: Int? = 1
 
@@ -4387,6 +4388,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             number = appPreference.sumire_keymap_guide_number
         )
         customKeymapGuidePreference = appPreference.flick_keymap_guide_layout ?: false
+        romajiFlick12KeymapGuidePreference = appPreference.romaji_flick12_keymap_guide
         runtimeGestureSettingsSource.update(
             flickSensitivity = sensitivity,
             flickThresholdShape = thresholdShape,
@@ -4700,6 +4702,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             number = preferences.sumireNumberKeymapGuide
         )
         customKeymapGuidePreference = preferences.customKeymapGuide
+        romajiFlick12KeymapGuidePreference = preferences.romajiFlick12KeymapGuide
         flickGuideTextSizeSpPreference = preferences.flickGuideTextSizeSp
         flickGuideMaxCharactersPreference = preferences.flickGuideMaxCharacters
         if (splitController != null || splitLoadingJob?.isActive == true) {
@@ -11344,7 +11347,10 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         direct: Boolean = isCustomLayoutDirectMode,
         romaji: Boolean = isCustomLayoutRomajiMode,
     ) {
-        renderCustomKeyboardToggles(flickView, shift, direct, romaji)
+        renderCustomKeyboardToggles(
+            flickView, shift, direct, romaji,
+            keyCharacterCase = if (isRomajiFlick12Active) KeyCharacterCase.UPPERCASE else shift.keyCharacterCase
+        )
     }
 
     private fun syncCustomKeyboardTogglePresentationOnAvailableSurfaces() {
@@ -11362,7 +11368,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         mode: KeyboardInputMode = customKeyboardMode,
         surface: FlickGuideSurface = when (qwertyMode.value) {
             TenKeyQWERTYMode.Sumire -> FlickGuideSurface.Sumire
-            TenKeyQWERTYMode.Custom -> FlickGuideSurface.Custom
+            TenKeyQWERTYMode.Custom ->
+                if (isRomajiFlick12Active) FlickGuideSurface.RomajiFlick12 else FlickGuideSurface.Custom
             else -> FlickGuideSurface.Other
         }
     ) {
@@ -11370,7 +11377,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             surface = surface,
             mode = mode,
             sumireSettings = sumireKeymapGuideSettings,
-            customGuideEnabled = customKeymapGuidePreference
+            customGuideEnabled = customKeymapGuidePreference,
+            romajiFlick12GuideEnabled = romajiFlick12KeymapGuidePreference
         )
         flickView.setFlickGuideEnabled(
             enabled = config.enabled,
@@ -15078,7 +15086,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         isCustomLayoutRomajiMode = true
         isCustomLayoutDirectMode = false
         customKeyboardShiftState = CustomKeyboardShiftState.OFF
-        getActiveKeyboardSurface()?.customLayout?.let(::applyCurrentFlickGuidePreference)
+        listOfNotNull(getNormalKeyboardSurface()?.customLayout, getFloatingKeyboardSurface()?.customLayout)
+            .forEach { applyCurrentFlickGuidePreference(it) }
         setCustomLayoutOnAvailableSurfaces(RomajiFlick12KeyLayout.create())
         syncCustomKeyboardTogglePresentationOnAvailableSurfaces()
     }

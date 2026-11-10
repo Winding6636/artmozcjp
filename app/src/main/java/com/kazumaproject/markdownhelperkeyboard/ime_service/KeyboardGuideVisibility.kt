@@ -19,6 +19,7 @@ internal data class ModeKeymapGuideSettings(
 internal enum class FlickGuideSurface {
     Sumire,
     Custom,
+    RomajiFlick12,
     Other
 }
 
@@ -31,7 +32,8 @@ internal fun resolveFlickGuideRuntimeConfig(
     surface: FlickGuideSurface,
     mode: KeyboardInputMode,
     sumireSettings: ModeKeymapGuideSettings,
-    customGuideEnabled: Boolean
+    customGuideEnabled: Boolean,
+    romajiFlick12GuideEnabled: Boolean = true
 ): FlickGuideRuntimeConfig {
     return when (surface) {
         FlickGuideSurface.Sumire -> FlickGuideRuntimeConfig(
@@ -41,6 +43,11 @@ internal fun resolveFlickGuideRuntimeConfig(
 
         FlickGuideSurface.Custom -> FlickGuideRuntimeConfig(
             enabled = customGuideEnabled,
+            allowMultiCharacterLabels = false
+        )
+
+        FlickGuideSurface.RomajiFlick12 -> FlickGuideRuntimeConfig(
+            enabled = romajiFlick12GuideEnabled,
             allowMultiCharacterLabels = false
         )
 
