@@ -133,7 +133,8 @@ object CandidateStripContentResolver {
             text = state.clipboardText,
             bitmap = state.clipboardBitmap,
             descriptionShown = state.clipboardPreviewDescriptionShown,
-            tapToDelete = state.clipboardPreviewTapToDelete
+            tapToDelete = state.clipboardPreviewTapToDelete,
+            secondText = state.clipboardSecondText
         )
     }
 

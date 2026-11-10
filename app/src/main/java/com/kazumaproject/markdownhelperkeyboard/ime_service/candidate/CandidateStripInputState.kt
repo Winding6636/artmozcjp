@@ -24,6 +24,7 @@ data class CandidateStripInputState(
     val clipboardText: String,
     val clipboardBitmap: Bitmap?,
     val clipboardTextIsLastPasted: Boolean,
+    val clipboardSecondText: String = "",
     val incognitoVisible: Boolean,
     val undoEnabled: Boolean,
     val redoEnabled: Boolean,

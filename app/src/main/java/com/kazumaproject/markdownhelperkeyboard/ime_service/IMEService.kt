@@ -724,11 +724,13 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private var isClipboardHistoryFeatureEnabled: Boolean = false
     private val clipboardMutex = Mutex()
     private val clipboardPreviewRequestId = AtomicLong(0L)
+    private val CLIPBOARD_SECOND_LOOKUP_LIMIT = 4
     private var clipboardPreviewLoadJob: Job? = null
     @Volatile
     private var cachedClipboardPreviewItem: ClipboardItem = ClipboardItem.Empty
     @Volatile
     private var cachedClipboardPreviewSensitive: Boolean = false
+    private var cachedClipboardSecondText: String = ""
     private val zenzModelPathMutex = Mutex()
     private var cachedZenzModelSource: String? = null
     private var cachedZenzModelPath: String? = null
@@ -1188,10 +1190,19 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             val isSensitive = runCatching {
                 clipboardUtil.isPrimaryClipSensitive()
             }.getOrDefault(false)
+            val secondText = if (isClipboardHistoryFeatureEnabled && item is ClipboardItem.Text && !isSensitive) {
+                runCatching {
+                    clipboardHistoryRepository.getLatestTexts(CLIPBOARD_SECOND_LOOKUP_LIMIT)
+                        .firstOrNull { it.isNotBlank() && it != item.text }
+                }.getOrNull().orEmpty()
+            } else {
+                ""
+            }
             withContext(Dispatchers.Main.immediate) {
                 if (clipboardPreviewRequestId.get() != requestId) return@withContext
                 cachedClipboardPreviewItem = item
                 cachedClipboardPreviewSensitive = isSensitive
+                cachedClipboardSecondText = secondText
                 updateClipboardPreview()
             }
         }
@@ -1421,6 +1432,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             clipboardText = clipboardPreview.text,
             clipboardBitmap = clipboardPreview.bitmap,
             clipboardTextIsLastPasted = clipboardPreview.textIsLastPasted,
+            clipboardSecondText = resolveClipboardSecondPreviewText(),
             incognitoVisible = candidateStripIncognitoVisible,
             undoEnabled = hasUndoHistory,
             redoEnabled = hasRedoHistory,
@@ -1441,6 +1453,15 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             shortcutItems = currentShortcutItems,
             inlineSuggestionToggle = inlineSuggestionToggleForCandidateStrip(),
         )
+    }
+
+    private fun resolveClipboardSecondPreviewText(): String {
+        val second = cachedClipboardSecondText
+        if (second.isEmpty()) return ""
+        if (clipboardPreviewTapToDelete == true &&
+            appPreference.last_pasted_clipboard_text_preference == second
+        ) return ""
+        return second
     }
 
     private fun resolveClipboardPreviewSnapshot(): ClipboardPreviewSnapshot {
@@ -17912,6 +17933,18 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         refreshEditHistoryUi()
     }
 
+    private fun pasteSecondClipboardText(text: String) {
+        clearZeroQueryAllState(refresh = false)
+        val inputConnection = currentInputConnection ?: return
+        scope.launch {
+            if (currentInputConnection !== inputConnection) return@launch
+            pasteClipboardText(text)
+            clearDeletedBufferWithoutResetLayout()
+            refreshEditHistoryUi()
+            refreshCandidateStripContent()
+        }
+    }
+
     private fun pasteClipboardText(text: String) {
         if (text.isEmpty() || !commitText(text, 1)) return
         // The editor replaced its composing region. Clear local preedit before the
@@ -23910,6 +23943,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
                 }
             }
+            adapter.setOnClipboardSecondClickListener { text -> pasteSecondClipboardText(text) }
             adapter.setOnItemHelperIconLongClickListener { helperIcon ->
                 when (helperIcon) {
                     SuggestionAdapter.HelperIcon.UNDO -> {
@@ -24012,6 +24046,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
                 }
             }
+            adapter.setOnClipboardSecondClickListener { text -> pasteSecondClipboardText(text) }
             adapter.setOnItemHelperIconLongClickListener { helperIcon ->
                 when (helperIcon) {
                     SuggestionAdapter.HelperIcon.UNDO -> {

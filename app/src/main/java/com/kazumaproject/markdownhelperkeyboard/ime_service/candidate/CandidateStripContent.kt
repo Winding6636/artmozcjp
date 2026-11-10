@@ -72,4 +72,5 @@ data class ClipboardPreviewState(
     val bitmap: Bitmap?,
     val descriptionShown: Boolean,
     val tapToDelete: Boolean,
+    val secondText: String = "",
 )

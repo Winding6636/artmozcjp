@@ -339,6 +339,7 @@ class SuggestionAdapter internal constructor(
         val clipboardDescriptionShown: Boolean,
         val clipboardText: String,
         val clipboardBitmap: Bitmap?,
+        val clipboardSecondText: String,
         val centerInStrip: Boolean,
         val offsetForLeadingShortcutEntry: Boolean,
         val addInlineStartMargin: Boolean,
@@ -352,6 +353,7 @@ class SuggestionAdapter internal constructor(
     private var onItemLongClickListener: ((Candidate, Int) -> Unit)? = null
     private var onItemHelperIconClickListener: ((HelperIcon) -> Unit)? = null
     private var onItemHelperIconLongClickListener: ((HelperIcon) -> Unit)? = null
+    private var onClipboardSecondClickListener: ((String) -> Unit)? = null
     private var onCustomLayoutItemClickListener: ((Int) -> Unit)? = null
     private var onShortcutItemClickListener: ((ShortcutType) -> Unit)? = null
     private var onShortcutEntryClickListener: ((View) -> Unit)? = null
@@ -509,6 +511,7 @@ class SuggestionAdapter internal constructor(
         onItemLongClickListener = { a, b -> source.onItemLongClickListener?.invoke(a, b) }
         onItemHelperIconClickListener = { a -> source.onItemHelperIconClickListener?.invoke(a) }
         onItemHelperIconLongClickListener = { a -> source.onItemHelperIconLongClickListener?.invoke(a) }
+        onClipboardSecondClickListener = { a -> source.onClipboardSecondClickListener?.invoke(a) }
         onShortcutItemClickListener = { a -> source.onShortcutItemClickListener?.invoke(a) }
         onShortcutEntryClickListener = { a -> source.onShortcutEntryClickListener?.invoke(a) }
         onZeroQueryCandidateClickListener = { a -> source.onZeroQueryCandidateClickListener?.invoke(a) }
@@ -530,6 +533,10 @@ class SuggestionAdapter internal constructor(
 
     fun setOnItemHelperIconClickListener(onItemHelperIconClickListener: (HelperIcon) -> Unit) {
         this.onItemHelperIconClickListener = onItemHelperIconClickListener
+    }
+
+    fun setOnClipboardSecondClickListener(listener: (String) -> Unit) {
+        onClipboardSecondClickListener = listener
     }
 
     fun setOnItemHelperIconLongClickListener(onItemHelperIconLongClickListener: (HelperIcon) -> Unit) {
@@ -1095,6 +1102,7 @@ class SuggestionAdapter internal constructor(
                             clipboardDescriptionShown = preview.descriptionShown,
                             clipboardText = preview.text,
                             clipboardBitmap = preview.bitmap,
+                            clipboardSecondText = preview.secondText,
                             centerInStrip = content.shouldCenterClipboardPreview(),
                             offsetForLeadingShortcutEntry =
                                 content.shouldOffsetCenteredClipboardPreview(),
@@ -1198,6 +1206,7 @@ class SuggestionAdapter internal constructor(
             clipboardDescriptionShown = isClipboardDescriptionShow,
             clipboardText = clipboardText,
             clipboardBitmap = clipboardBitmap,
+            clipboardSecondText = "",
             centerInStrip = centerInStrip,
             offsetForLeadingShortcutEntry = false,
             addInlineStartMargin = false,
@@ -1333,6 +1342,9 @@ class SuggestionAdapter internal constructor(
             itemView.findViewById(R.id.clipboard_text_preview)
         val clipboardPreviewTextDescription: MaterialTextView? =
             itemView.findViewById(R.id.clipboard_preview_text_description)
+        val pasteSecondParent: ConstraintLayout? = itemView.findViewById(R.id.paste_second_parent)
+        val clipboardSecondText: MaterialTextView? =
+            itemView.findViewById(R.id.clipboard_second_text_preview)
     }
 
     inner class CustomLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -2081,8 +2093,23 @@ class SuggestionAdapter internal constructor(
                 }
             }
 
+            val showSecond = state.clipboardBitmap == null && state.clipboardSecondText.isNotEmpty()
+            clipboardPreviewText?.maxEms = if (showSecond) 5 else 8
             clipboardPreviewText?.text =
                 if (state.clipboardBitmap == null) state.clipboardText else ""
+            pasteSecondParent?.apply {
+                visibility = if (showSecond) View.VISIBLE else View.GONE
+                setOnClickListener {
+                    onClipboardSecondClickListener?.invoke(state.clipboardSecondText)
+                }
+            }
+            clipboardSecondText?.text = state.clipboardSecondText
+            applyEmptyHelperButtonStyle(
+                parent = pasteSecondParent,
+                text = clipboardSecondText,
+                icon = null,
+                isDynamicColorEnable = isDynamicColorEnable,
+            )
 
             applyEmptyHelperButtonStyle(
                 parent = pasteIconParent,

@@ -24,6 +24,9 @@ interface ClipboardHistoryDao {
     @Query("SELECT * FROM clipboard_history ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLatestItem(): ClipboardHistoryItem?
 
+    @Query("SELECT * FROM clipboard_history ORDER BY timestamp DESC LIMIT :limit")
+    suspend fun getLatestItems(limit: Int): List<ClipboardHistoryItem>
+
     @Query("SELECT * FROM clipboard_history WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): ClipboardHistoryItem?
 

@@ -2,9 +2,15 @@ name: Debug APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'td/**'
+    inputs:
+      edition:
+        description: 'ビルドする版'
+        type: choice
+        options:
+          - lite
+          - full
+          - both
+        default: lite
 
 permissions:
   contents: read
@@ -15,6 +21,7 @@ concurrency:
 
 jobs:
   build:
+    if: inputs.edition == 'lite' || inputs.edition == 'both'
     name: Build Lite debug APK
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -67,6 +74,7 @@ jobs:
           retention-days: 14
 
   build-full:
+    if: inputs.edition == 'full' || inputs.edition == 'both'
     name: Build Full debug APK
     runs-on: ubuntu-latest
     timeout-minutes: 90

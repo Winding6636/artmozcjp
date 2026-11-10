@@ -182,6 +182,12 @@ class ClipboardHistoryRepository @Inject constructor(
         return@withContext dao.getLatestItem()
     }
 
+    suspend fun getLatestTexts(limit: Int): List<String> = withContext(Dispatchers.IO) {
+        dao.getLatestItems(limit)
+            .filter { it.itemType == ItemType.TEXT }
+            .map { getFullText(it) }
+    }
+
     /**
      * 現在の履歴のスナップショットを取得します。
      */
