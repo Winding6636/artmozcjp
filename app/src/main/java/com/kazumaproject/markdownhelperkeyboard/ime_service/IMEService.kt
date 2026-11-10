@@ -11534,7 +11534,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         if (isRomajiFlick12Active) {
             setKeyboardWithDeleteKeyFlickPreferences(
                 flickView,
-                RomajiFlick12KeyLayout.create(),
+                currentRomajiFlick12Layout(),
                 isUserDefinedCustomLayout = true
             )
             syncCustomKeyboardTogglePresentation(flickView)
@@ -15003,7 +15003,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     if (qwertyMode.value != TenKeyQWERTYMode.Number) {
                         clearQwertySwitchNumberKeyReturnSource()
                         _tenKeyQWERTYMode.update { TenKeyQWERTYMode.Custom }
-                        applyRomajiFlick12Layout()
+                        applyRomajiFlick12Layout(resetInputMode = true)
                     } else {
                         setNumberLayoutTo(customLayoutDefault)
                     }
@@ -15082,13 +15082,20 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
     }
 
-    private fun applyRomajiFlick12Layout() {
-        isCustomLayoutRomajiMode = true
+    private fun currentRomajiFlick12Layout(): KeyboardLayout =
+        if (customKeyboardMode == KeyboardInputMode.SYMBOLS) RomajiFlick12KeyLayout.createNumber()
+        else RomajiFlick12KeyLayout.create(isRomaji = isCustomLayoutRomajiMode)
+
+    private fun applyRomajiFlick12Layout(resetInputMode: Boolean = false) {
+        if (resetInputMode) {
+            isCustomLayoutRomajiMode = true
+            customKeyboardMode = KeyboardInputMode.HIRAGANA
+        }
         isCustomLayoutDirectMode = false
         customKeyboardShiftState = CustomKeyboardShiftState.OFF
         listOfNotNull(getNormalKeyboardSurface()?.customLayout, getFloatingKeyboardSurface()?.customLayout)
             .forEach { applyCurrentFlickGuidePreference(it) }
-        setCustomLayoutOnAvailableSurfaces(RomajiFlick12KeyLayout.create())
+        setCustomLayoutOnAvailableSurfaces(currentRomajiFlick12Layout())
         syncCustomKeyboardTogglePresentationOnAvailableSurfaces()
     }
 
@@ -15133,9 +15140,13 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
 
                     KeyboardInputMode.SYMBOLS -> {
-                        setCustomLayoutOnActiveSurface(
-                            KeyboardDefaultLayouts.createNumberLayout(currentDeleteKeyFlickSettings())
-                        )
+                        if (isRomajiFlick12Active) {
+                            applyRomajiFlick12Layout()
+                        } else {
+                            setCustomLayoutOnActiveSurface(
+                                KeyboardDefaultLayouts.createNumberLayout(currentDeleteKeyFlickSettings())
+                            )
+                        }
                     }
 
                 }
@@ -15190,7 +15201,45 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         syncFloatingKeyboardContentForMode(qwertyMode.value)
     }
 
+    private fun switchRomajiFlick12InputMode(mode: KeyboardInputMode) {
+        val returningFromNumber = customKeyboardMode == KeyboardInputMode.SYMBOLS
+        when (mode) {
+            KeyboardInputMode.HIRAGANA -> {
+                if (!returningFromNumber) isCustomLayoutRomajiMode = true
+                customKeyboardMode = KeyboardInputMode.HIRAGANA
+                setCurrentInputModeForSession(InputMode.ModeJapanese)
+            }
+
+            KeyboardInputMode.ENGLISH -> {
+                isCustomLayoutRomajiMode = false
+                customKeyboardMode = KeyboardInputMode.HIRAGANA
+                setCurrentInputModeForSession(InputMode.ModeJapanese)
+            }
+
+            KeyboardInputMode.SYMBOLS -> {
+                customKeyboardMode = KeyboardInputMode.SYMBOLS
+                setCurrentInputModeForSession(InputMode.ModeNumber)
+            }
+        }
+        applyRomajiFlick12Layout()
+    }
+
+    private fun onRomajiFlick12ModeKeyTapped() {
+        if (!isCustomLayoutRomajiMode) {
+            applyRomajiFlick12Layout()
+            return
+        }
+        switchNextKeyboard()
+        _inputString.update { "" }
+        finishComposingText()
+        setComposingText("", 0)
+    }
+
     private fun switchFlickKeyboardInputMode(mode: KeyboardInputMode) {
+        if (isRomajiFlick12Active) {
+            switchRomajiFlick12InputMode(mode)
+            return
+        }
         customKeyboardMode = mode
         setCurrentInputModeForSession(
             when (mode) {
@@ -16612,7 +16661,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     KeyAction.SwitchRomajiEnglish -> {
                         isCustomLayoutRomajiMode = !isCustomLayoutRomajiMode
                         persistCurrentCustomKeyboardInputModeIfEnabled()
-                        if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
+                        if (isRomajiFlick12Active) onRomajiFlick12ModeKeyTapped()
+                        else if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
                             getActiveKeyboardSurface()?.customLayout?.updateKeyIconByAction(
                                 KeyAction.SwitchRomajiEnglish,
                                 if (isCustomLayoutRomajiMode) com.kazumaproject.core.R.drawable.language_japanese_kana_left_bold_24px
@@ -17072,7 +17122,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     KeyAction.SwitchRomajiEnglish -> {
                         isCustomLayoutRomajiMode = !isCustomLayoutRomajiMode
                         persistCurrentCustomKeyboardInputModeIfEnabled()
-                        if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
+                        if (isRomajiFlick12Active) onRomajiFlick12ModeKeyTapped()
+                        else if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
                             getActiveKeyboardSurface()?.customLayout?.updateKeyIconByAction(
                                 KeyAction.SwitchRomajiEnglish,
                                 if (isCustomLayoutRomajiMode) com.kazumaproject.core.R.drawable.language_japanese_kana_left_bold_24px

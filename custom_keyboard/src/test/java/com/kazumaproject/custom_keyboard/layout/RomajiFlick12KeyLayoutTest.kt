@@ -130,25 +130,73 @@ class RomajiFlick12KeyLayoutTest {
 
     @Test
     fun everyAlphabetLetterIsReachableExactlyOnce() {
-        val letters = layout.flickKeyMaps.keys.flatMap { label -> outputs(label).values }
+        val letters = layout.keys.filter { it.keyType == KeyType.STANDARD_FLICK }.flatMap { outputs(it.label).values }
             .filter { it.length == 1 && it[0] in 'a'..'z' }
         assertEquals(('a'..'z').map { it.toString() }, letters.sorted())
     }
 
+    private fun actions(l: com.kazumaproject.custom_keyboard.data.KeyboardLayout, keyId: String) =
+        l.flickKeyMaps.getValue(keyId).single().mapValues { (_, a) -> (a as FlickAction.Action).action }
+
     @Test
-    fun sideColumnsHoldTheEditingKeys() {
+    fun leftColumnIsEmojiCursorNumberAndModeKey() {
+        assertEquals(KeyAction.ShowEmojiKeyboard, keyAt(0, 0).action)
+        assertEquals(KeyAction.MoveCursorLeft, keyAt(1, 0).action)
+        assertEquals(KeyAction.SwitchToNumberLayout, keyAt(2, 0).action)
+        assertEquals(RomajiFlick12KeyLayout.MODE_KEY_ID, keyAt(3, 0).keyId)
+        assertEquals(KeyType.CROSS_FLICK, keyAt(3, 0).keyType)
+    }
+
+    @Test
+    fun modeKeyCyclesOnTapAndJumpsByFlickDirection() {
         assertEquals(
-            listOf(
-                KeyAction.SwitchToNextIme,
-                KeyAction.MoveCursorLeft,
-                KeyAction.ShowEmojiKeyboard,
-                KeyAction.SwitchRomajiEnglish,
+            mapOf(
+                FlickDirection.TAP to KeyAction.SwitchRomajiEnglish,
+                FlickDirection.UP to KeyAction.SwitchToEnglishLayout,
+                FlickDirection.UP_RIGHT_FAR to KeyAction.SwitchToNextIme,
+                FlickDirection.DOWN to KeyAction.SwitchToKanaLayout,
             ),
-            (0..3).map { keyAt(it, 0).action },
+            actions(layout, RomajiFlick12KeyLayout.MODE_KEY_ID),
+        )
+    }
+
+    @Test
+    fun modeKeyLabelShowsTheCurrentInputLanguage() {
+        assertEquals("あ", keyAt(3, 0).label)
+        val english = RomajiFlick12KeyLayout.create(isRomaji = false)
+        assertEquals("A", english.keys.single { it.row == 3 && it.column == 0 }.label)
+        assertEquals(false, english.isRomaji)
+    }
+
+    @Test
+    fun spaceKeyEntersFullWidthOnUpAndHalfWidthOnDown() {
+        assertEquals(RomajiFlick12KeyLayout.SPACE_KEY_ID, keyAt(2, 4).keyId)
+        assertEquals(
+            mapOf(
+                FlickDirection.TAP to KeyAction.Space,
+                FlickDirection.UP to KeyAction.ForceFullWidthSpace,
+                FlickDirection.DOWN to KeyAction.ForceHalfWidthSpace,
+            ),
+            actions(layout, RomajiFlick12KeyLayout.SPACE_KEY_ID),
         )
         assertEquals(
-            listOf(KeyAction.Delete, KeyAction.MoveCursorRight, KeyAction.Space, KeyAction.Enter),
+            listOf(KeyAction.Delete, KeyAction.MoveCursorRight, null, KeyAction.Enter),
             (0..3).map { keyAt(it, 4).action },
         )
+    }
+
+    @Test
+    fun numberLayoutHasTenDigitsAndAKeyBackToLetters() {
+        val number = RomajiFlick12KeyLayout.createNumber()
+        fun at(row: Int, column: Int) = number.keys.single { it.row == row && it.column == column }
+        assertEquals(
+            listOf(listOf("1", "2", "3"), listOf("4", "5", "6"), listOf("7", "8", "9"), listOf(",", "0", ".")),
+            (0..3).map { row -> (1..3).map { column -> at(row, column).label } },
+        )
+        number.keys.filter { it.keyType == KeyType.STANDARD_FLICK }.forEach { key ->
+            val tap = number.flickKeyMaps.getValue(key.label).single().getValue(FlickDirection.TAP)
+            assertEquals(key.label, (tap as FlickAction.Input).char)
+        }
+        assertEquals(KeyAction.SwitchToKanaLayout, at(2, 0).action)
     }
 }
