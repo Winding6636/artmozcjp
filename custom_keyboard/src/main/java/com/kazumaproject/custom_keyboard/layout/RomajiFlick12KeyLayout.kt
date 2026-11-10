@@ -73,7 +73,7 @@ object RomajiFlick12KeyLayout {
         }
 
         val flickMaps = flickKeySpecs.associate { spec ->
-            spec.center.uppercase() to listOf(spec.toFlickMap())
+            spec.center.uppercase() to listOf(spec.toFlickMap(isRomaji))
         } + mapOf(
             MODE_KEY_ID to listOf(
                 mapOf(
@@ -186,14 +186,18 @@ object RomajiFlick12KeyLayout {
         keyId = keyId,
     )
 
-    private fun FlickKeySpec.toFlickMap(): Map<FlickDirection, FlickAction> =
-        buildMap {
+    private val englishPunctuation = mapOf("。" to ".", "、" to ",")
+
+    private fun FlickKeySpec.toFlickMap(isRomaji: Boolean): Map<FlickDirection, FlickAction> {
+        fun localized(text: String) = if (isRomaji) text else englishPunctuation[text] ?: text
+        return buildMap {
             put(FlickDirection.TAP, input(center))
-            up?.let { put(FlickDirection.UP, input(it)) }
-            left?.let { put(FlickDirection.UP_LEFT_FAR, input(it)) }
-            right?.let { put(FlickDirection.UP_RIGHT_FAR, input(it)) }
-            down?.let { put(FlickDirection.DOWN, input(it)) }
+            up?.let { put(FlickDirection.UP, input(localized(it))) }
+            left?.let { put(FlickDirection.UP_LEFT_FAR, input(localized(it))) }
+            right?.let { put(FlickDirection.UP_RIGHT_FAR, input(localized(it))) }
+            down?.let { put(FlickDirection.DOWN, input(localized(it))) }
         }
+    }
 
     private fun input(text: String): FlickAction =
         FlickAction.Input(text, label = text.uppercase())

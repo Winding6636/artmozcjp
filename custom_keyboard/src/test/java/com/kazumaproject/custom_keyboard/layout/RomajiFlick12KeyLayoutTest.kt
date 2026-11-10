@@ -169,6 +169,16 @@ class RomajiFlick12KeyLayoutTest {
     }
 
     @Test
+    fun englishModeUsesAsciiPeriodAndCommaInsteadOfJapanesePunctuation() {
+        val english = RomajiFlick12KeyLayout.create(isRomaji = false)
+        fun right(label: String) =
+            (english.flickKeyMaps.getValue(label).single().getValue(FlickDirection.UP_RIGHT_FAR) as FlickAction.Input).char
+        assertEquals(".", right("U"))
+        assertEquals(",", right("E"))
+        assertEquals("-", right("O"))
+    }
+
+    @Test
     fun spaceKeyEntersFullWidthOnUpAndHalfWidthOnDown() {
         assertEquals(RomajiFlick12KeyLayout.SPACE_KEY_ID, keyAt(2, 4).keyId)
         assertEquals(
