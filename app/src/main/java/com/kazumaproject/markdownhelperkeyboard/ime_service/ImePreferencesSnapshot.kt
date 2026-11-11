@@ -493,7 +493,7 @@ data class ImePreferencesSnapshot(
                 qwertyRomajiHankakuSymbolPreference =
                     appPreference.qwerty_romaji_hankaku_symbol_preference ?: false,
                 qwertyShowKutoutenButtonsPreference =
-                    appPreference.qwerty_show_kutouten_buttons ?: false,
+                    appPreference.qwerty_show_kutouten_buttons ?: true,
                 showCandidateInPasswordPreference = appPreference.show_candidates_password ?: true,
                 inlineSuggestionEnabled = appPreference.inline_suggestion_enabled_preference,
                 qwertyShowKeymapSymbolsPreference =

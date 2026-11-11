@@ -437,7 +437,7 @@ object AppPreference {
     private val TYPE_NULL_INPUT_BEHAVIOR = Pair("type_null_input_behavior_preference", "default")
 
     private val QWERTY_SHOW_KUTOUTEN_BUTTONS =
-        Pair("qwerty_show_kutouten_buttons_preference", false)
+        Pair("qwerty_show_kutouten_buttons_preference", true)
 
     private val KEYBOARD_HEIGHT = Pair("keyboard_height_preference", 220)
     private val KEYBOARD_WIDTH = Pair("keyboard_width_preference", 100)
@@ -1798,7 +1798,7 @@ object AppPreference {
             QWERTY_SHOW_KUTOUTEN_BUTTONS.first, QWERTY_SHOW_KUTOUTEN_BUTTONS.second
         )
         set(value) = preferences.edit {
-            it.putBoolean(QWERTY_SHOW_KUTOUTEN_BUTTONS.first, value ?: false)
+            it.putBoolean(QWERTY_SHOW_KUTOUTEN_BUTTONS.first, value ?: true)
         }
 
     var keyboard_order: List<KeyboardType>

@@ -442,7 +442,7 @@ internal class GeometryPreview(context: Context, private val keyboard: PreviewKe
         listOf(QwertyR.id.cursor_left, QwertyR.id.cursor_right).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_cursor_buttons != false) VISIBLE else GONE }
         root.findViewById<View>(QwertyR.id.key_switch_default).visibility = if (AppPreference.qwerty_show_ime_button != false) VISIBLE else GONE
         root.findViewById<View>(QwertyR.id.key_emoji).visibility = if (AppPreference.qwerty_show_emoji_button == true) VISIBLE else GONE
-        listOf(QwertyR.id.key_kuten, QwertyR.id.key_touten).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_kutouten_buttons == true) VISIBLE else GONE }
+        listOf(QwertyR.id.key_kuten, QwertyR.id.key_touten).forEach { root.findViewById<View>(it).visibility = if (AppPreference.qwerty_show_kutouten_buttons != false) VISIBLE else GONE }
         // This preview shows the English QWERTY state. The Japanese/English switch is only
         // present in the separate Romaji state.
         root.findViewById<View>(QwertyR.id.switch_romaji_english).visibility = if (keyboard == PreviewKeyboard.ROMAJI) VISIBLE else GONE
