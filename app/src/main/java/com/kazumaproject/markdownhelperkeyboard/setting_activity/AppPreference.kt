@@ -1077,6 +1077,10 @@ object AppPreference {
             return
         }
         if (preferences.getBoolean(GOJUON_KEYBOARD_TYPE_MIGRATION_KEY, false)) return
+        if (!preferences.contains(KEYBOARD_ORDER.first)) {
+            preferences.edit { it.putBoolean(GOJUON_KEYBOARD_TYPE_MIGRATION_KEY, true) }
+            return
+        }
 
         val legacyDefault = legacyDefaultKeyboardOrder()
         val legacyOrder = if (preferences.contains(KEYBOARD_ORDER.first)) {
