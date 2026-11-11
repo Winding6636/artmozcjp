@@ -231,7 +231,7 @@ class QwertyMarginSettingFragment : Fragment() {
             appPreference.qwerty_show_number_buttons ?: false
         )
         binding.previewQwertyView.updateSymbolKeymapState(
-            appPreference.qwerty_show_keymap_symbols ?: false
+            appPreference.qwerty_show_keymap_symbols ?: true
         )
     }
 

@@ -890,7 +890,7 @@
         android:textColor="@color/keyboard_icon_color"
         android:textSize="@dimen/qwerty_side_key_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/cursor_left"
+        app:layout_constraintEnd_toStartOf="@id/key_space"
         app:layout_constraintHorizontal_weight="0.5"
         app:layout_constraintStart_toEndOf="@id/key_123"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
@@ -909,9 +909,9 @@
         android:textColor="@color/keyboard_icon_color"
         android:textSize="@dimen/qwerty_side_key_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/cursor_right"
+        app:layout_constraintEnd_toStartOf="@id/key_kuten"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/cursor_left"
+        app:layout_constraintStart_toEndOf="@id/key_touten"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <com.kazumaproject.qwerty_keyboard.ui.QWERTYButton
@@ -927,9 +927,9 @@
         android:textColor="@color/keyboard_icon_color"
         android:textSize="@dimen/qwerty_side_key_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/key_return"
+        app:layout_constraintEnd_toStartOf="@id/cursor_left"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/cursor_right"
+        app:layout_constraintStart_toEndOf="@id/key_space"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -943,9 +943,9 @@
         android:scaleType="center"
         android:src="@drawable/cursor_arrow_left_large"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/key_space"
+        app:layout_constraintEnd_toStartOf="@id/cursor_right"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/key_touten"
+        app:layout_constraintStart_toEndOf="@id/key_kuten"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -960,9 +960,9 @@
         android:scaleType="center"
         android:src="@drawable/cursor_arrow_right_large"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/key_kuten"
+        app:layout_constraintEnd_toStartOf="@id/key_return"
         app:layout_constraintHorizontal_weight="0.5"
-        app:layout_constraintStart_toEndOf="@id/key_space"
+        app:layout_constraintStart_toEndOf="@id/cursor_left"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -980,7 +980,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/key_kuten"
+        app:layout_constraintStart_toEndOf="@id/cursor_right"
         app:layout_constraintTop_toBottomOf="@id/guideline_z_row" />
 
 </merge>

@@ -481,7 +481,7 @@ data class ImePreferencesSnapshot(
                 qwertyRomajiSpaceFlickPreference = appPreference.qwerty_romaji_space_flick_preference,
                 qwertyEnglishSpaceFlickPreference = appPreference.qwerty_english_space_flick_preference,
                 qwertyEnableFlickUpPreference =
-                    appPreference.qwerty_enable_flick_up_preference ?: false,
+                    appPreference.qwerty_enable_flick_up_preference ?: true,
                 qwertyEnableFlickDownPreference =
                     appPreference.qwerty_enable_flick_down_preference ?: false,
                 qwertyNumberKeyFlickUpChars = appPreference.getQwertyNumberKeyFlickUpChars(),
@@ -497,7 +497,7 @@ data class ImePreferencesSnapshot(
                 showCandidateInPasswordPreference = appPreference.show_candidates_password ?: true,
                 inlineSuggestionEnabled = appPreference.inline_suggestion_enabled_preference,
                 qwertyShowKeymapSymbolsPreference =
-                    appPreference.qwerty_show_keymap_symbols ?: false,
+                    appPreference.qwerty_show_keymap_symbols ?: true,
                 qwertyRomajiShiftConversionPreference =
                     appPreference.qwerty_romaji_shift_conversion_preference,
                 isNgWordEnable = appPreference.ng_word_preference ?: true,

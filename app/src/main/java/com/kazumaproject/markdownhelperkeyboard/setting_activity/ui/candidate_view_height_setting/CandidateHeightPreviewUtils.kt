@@ -635,10 +635,10 @@ private fun configureQwertyPreview(
         showEmojiKey = appPreference.qwerty_show_emoji_button ?: false
     )
     qwertyView.setRomajiEnglishSwitchKeyTextWithStyle(true)
-    qwertyView.updateSymbolKeymapState(appPreference.qwerty_show_keymap_symbols ?: false)
+    qwertyView.updateSymbolKeymapState(appPreference.qwerty_show_keymap_symbols ?: true)
     qwertyView.updateNumberKeyState(appPreference.qwerty_show_number_buttons ?: false)
     qwertyView.setPopUpViewState(appPreference.qwerty_show_popup_window ?: true)
-    qwertyView.setFlickUpDetectionEnabled(appPreference.qwerty_enable_flick_up_preference ?: false)
+    qwertyView.setFlickUpDetectionEnabled(appPreference.qwerty_enable_flick_up_preference ?: true)
     qwertyView.setFlickDownDetectionEnabled(appPreference.qwerty_enable_flick_down_preference ?: false)
     qwertyView.setNumberKeyFlickUpChars(appPreference.getQwertyNumberKeyFlickUpChars())
     qwertyView.setNumberKeyFlickDownChars(appPreference.getQwertyNumberKeyFlickDownChars())

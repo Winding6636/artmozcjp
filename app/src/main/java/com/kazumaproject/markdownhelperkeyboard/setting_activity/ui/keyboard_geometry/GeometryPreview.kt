@@ -482,11 +482,11 @@ internal class GeometryPreview(context: Context, private val keyboard: PreviewKe
             if (v is PreviewQwertyButton) {
                 val character = v.text?.toString().orEmpty()
                 if (showNumber && character.length == 1 && character[0].isDigit()) {
-                    if (AppPreference.qwerty_enable_flick_up_preference == true)
+                    if (AppPreference.qwerty_enable_flick_up_preference != false)
                         v.upperGuide = AppPreference.getQwertyNumberKeyFlickUpChars()[character]?.firstOrNull()
                     if (AppPreference.qwerty_enable_flick_down_preference == true)
                         v.lowerGuide = AppPreference.getQwertyNumberKeyFlickDownChars()[character]?.firstOrNull()
-                } else if (AppPreference.qwerty_show_keymap_symbols == true) {
+                } else if (AppPreference.qwerty_show_keymap_symbols != false) {
                     val withoutNumbers = "1234567890"
                     val withNumbers = "%\\|=[]<>{}"
                     val topRow = "qwertyuiop".indexOf(character)

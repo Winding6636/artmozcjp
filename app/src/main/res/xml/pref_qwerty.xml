@@ -26,7 +26,7 @@
             android:title="@string/switch_qwerty_preference_title" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="qwerty_enable_flick_up_preference"
             android:summary="@string/pref_qwerty_enable_flick_up_summary"
             android:title="@string/pref_qwerty_enable_flick_up_title" />

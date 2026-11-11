@@ -369,7 +369,7 @@ object AppPreference {
     private val QWERTY_SHOW_CURSOR_BUTTONS = Pair("qwerty_show_cursor_buttons_preference", true)
 
     private val QWERTY_SHOW_KEYMAP_SYMBOLS =
-        Pair("qwerty_show_keymap_symbols_romaji_preference", false)
+        Pair("qwerty_show_keymap_symbols_romaji_preference", true)
 
     private val QWERTY_SHOW_NUMBER_BUTTONS =
         Pair("qwerty_show_number_keys_buttons_preference", true)
@@ -395,7 +395,7 @@ object AppPreference {
     private val QWERTY_GLIDE_INSERT_SPACE_AFTER_COMMITTING_PREVIOUS_CANDIDATE_PREFERENCE =
         Pair("qwerty_glide_insert_space_after_committing_previous_candidate_preference", false)
 
-    private val QWERTY_ENABLE_FLICK_UP_WINDOW = Pair("qwerty_enable_flick_up_preference", false)
+    private val QWERTY_ENABLE_FLICK_UP_WINDOW = Pair("qwerty_enable_flick_up_preference", true)
 
     private val QWERTY_ENABLE_FLICK_DOWN_WINDOW = Pair("qwerty_enable_flick_down_preference", false)
 
@@ -1575,7 +1575,7 @@ object AppPreference {
             QWERTY_SHOW_KEYMAP_SYMBOLS.first, QWERTY_SHOW_KEYMAP_SYMBOLS.second
         )
         set(value) = preferences.edit {
-            it.putBoolean(QWERTY_SHOW_KEYMAP_SYMBOLS.first, value ?: false)
+            it.putBoolean(QWERTY_SHOW_KEYMAP_SYMBOLS.first, value ?: true)
         }
 
     var qwerty_show_number_buttons: Boolean?
@@ -1699,7 +1699,7 @@ object AppPreference {
             QWERTY_ENABLE_FLICK_UP_WINDOW.first, QWERTY_ENABLE_FLICK_UP_WINDOW.second
         )
         set(value) = preferences.edit {
-            it.putBoolean(QWERTY_ENABLE_FLICK_UP_WINDOW.first, value ?: false)
+            it.putBoolean(QWERTY_ENABLE_FLICK_UP_WINDOW.first, value ?: true)
         }
 
     var qwerty_enable_flick_down_preference: Boolean?

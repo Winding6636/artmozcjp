@@ -25,7 +25,7 @@
             android:title="@string/qwerty_romaji_hankaku_symbol_preference_title" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="qwerty_show_keymap_symbols_romaji_preference"
             android:summaryOff="@string/qwerty_keymap_preference_summary_off"
             android:summaryOn="@string/qwerty_keymap_preference_summary_on"
