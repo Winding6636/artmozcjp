@@ -444,6 +444,13 @@ class FlickKeyboardView @JvmOverloads constructor(
         localRuntimeGestureSettings.update(independentMultiTouchEnabled = enabled)
     }
 
+    private var standardPopupShowDelayMillis: Long = 0L
+
+    fun setStandardPopupShowDelayMillis(delayMillis: Long) {
+        standardPopupShowDelayMillis = delayMillis.coerceAtLeast(0L)
+        standardFlickControllers.forEach { it.popupShowDelayMillis = standardPopupShowDelayMillis }
+    }
+
     fun setFlickSensitivityValue(sensitivity: Int) {
         val normalized = sensitivity.coerceIn(1, 200)
         if (flickSensitivity == normalized) return
@@ -2143,6 +2150,7 @@ class FlickKeyboardView @JvmOverloads constructor(
                         setPopupWindowAnchorProvider(popupWindowAnchorProvider)
                         setInputTextTransform(::transformInputTextForDisplay)
                         applyPopupViewStyle(popupViewStyleSet.standard)
+                        popupShowDelayMillis = standardPopupShowDelayMillis
                         this.listener =
                             object : StandardFlickInputController.StandardFlickListener {
                                 override fun onPress(character: String) {

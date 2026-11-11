@@ -1842,6 +1842,9 @@
     <string name="keyboard_type_sumire">Japanese – Sumire input β</string>
     <string name="keyboard_type_qwerty">English (QWERTY)</string>
     <string name="keyboard_type_romaji">Japanese – Romaji</string>
+    <string name="category_romaji_flick12_title">Romaji 12-key</string>
+    <string name="romaji_flick12_popup_delay_title">Flick helper popup delay (ms)</string>
+    <string name="romaji_flick12_popup_delay_summary">Show the four-direction helper only after pressing this long or once you start swiping. 0 shows it immediately.</string>
     <string name="keyboard_type_romaji_flick12">Japanese – Romaji 12-key flick</string>
     <string name="romaji_flick12_keymap_guide_summary">Shows the characters you can enter by flicking, around each key.</string>
     <string name="keyboard_type_custom">Custom – User defined</string>

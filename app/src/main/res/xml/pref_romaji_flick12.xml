@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/category_romaji_flick12_title">
+
+        <Preference
+            android:key="romaji_flick12_size_position_preference"
+            android:title="@string/keyboard_layout_settings_title"
+            android:summary="@string/keyboard_layout_settings_summary" />
+
+        <Preference
+            android:key="romaji_flick12_key_size_preference"
+            android:title="@string/custom_keyboard_size_preference_title"
+            app:summary="@string/custom_keyboard_size_preference_summary" />
+
+        <Preference
+            android:key="romaji_flick12_popup_style_preference"
+            android:title="@string/flick_keyboard_popup_view_style_preference_title"
+            android:summary="@string/flick_keyboard_popup_view_style_preference_summary" />
+
+        <SeekBarPreference
+            android:defaultValue="150"
+            android:key="romaji_flick12_popup_delay_ms"
+            android:max="600"
+            android:title="@string/romaji_flick12_popup_delay_title"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:summary="@string/romaji_flick12_popup_delay_summary" />
+
+        <SwitchPreferenceCompat
+            android:key="romaji_flick12_keymap_guide"
+            android:title="@string/flick_keymap_guide_title"
+            app:defaultValue="true"
+            app:summary="@string/romaji_flick12_keymap_guide_summary" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

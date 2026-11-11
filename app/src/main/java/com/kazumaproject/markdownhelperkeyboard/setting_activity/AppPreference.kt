@@ -1490,6 +1490,10 @@ object AppPreference {
             it.putBoolean(FLICK_KEYMAP_GUIDE_PREFERENCE.first, value ?: false)
         }
 
+    var romaji_flick12_popup_delay_ms: Int
+        get() = preferences.getInt("romaji_flick12_popup_delay_ms", 150)
+        set(value) = preferences.edit { it.putInt("romaji_flick12_popup_delay_ms", value.coerceIn(0, 600)) }
+
     var romaji_flick12_keymap_guide: Boolean
         get() = preferences.getBoolean(
             ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE.first,

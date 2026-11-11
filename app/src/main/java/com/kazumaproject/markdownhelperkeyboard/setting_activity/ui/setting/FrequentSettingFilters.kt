@@ -82,6 +82,7 @@ internal object FrequentSettingFilters {
             R.id.qwertyRomajiPreferenceFragment,
             R.id.sumirePreferenceFragment,
             R.id.customKeyboardPreferenceFragment,
+            R.id.romajiFlick12PreferenceFragment,
             R.id.tabletPreferenceFragment,
             R.id.hardwareKeyboardPreferenceFragment,
             R.id.tenKeyCandidateLetterSizeFragment,

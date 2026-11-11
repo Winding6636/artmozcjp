@@ -90,13 +90,4 @@
             app:summary="@string/flick_guide_max_characters_summary" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/keyboard_type_romaji_flick12">
-
-        <SwitchPreferenceCompat
-            android:key="romaji_flick12_keymap_guide"
-            android:title="@string/flick_keymap_guide_title"
-            app:defaultValue="true"
-            app:summary="@string/romaji_flick12_keymap_guide_summary" />
-    </PreferenceCategory>
-
 </PreferenceScreen>

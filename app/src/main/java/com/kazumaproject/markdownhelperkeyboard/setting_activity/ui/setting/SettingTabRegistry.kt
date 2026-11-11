@@ -33,6 +33,7 @@ object SettingTabRegistry {
     const val TAB_SUMIRE = "sumire"
     const val TAB_SPLIT = "split_keyboard"
     const val TAB_CUSTOM = "custom"
+    const val TAB_ROMAJI_FLICK12 = "romaji_flick12"
     const val TAB_TABLET = "tablet"
     const val TAB_HARDWARE_KEYBOARD = "hardware_keyboard"
     const val TAB_ZENZ = "zenz"
@@ -160,6 +161,13 @@ object SettingTabRegistry {
                 xmlRes = R.xml.pref_custom,
                 destinationId = R.id.customKeyboardPreferenceFragment,
                 fragmentFactory = { CustomKeyboardPreferenceFragment() },
+            ),
+            SettingTabSpec(
+                key = TAB_ROMAJI_FLICK12,
+                title = { context -> context.getString(R.string.category_romaji_flick12_title) },
+                xmlRes = R.xml.pref_romaji_flick12,
+                destinationId = R.id.romajiFlick12PreferenceFragment,
+                fragmentFactory = { RomajiFlick12PreferenceFragment() },
             ),
             SettingTabSpec(
                 key = TAB_SPLIT,

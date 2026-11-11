@@ -1840,6 +1840,9 @@
     <string name="keyboard_type_sumire">日本語 - スミレ入力 β</string>
     <string name="keyboard_type_qwerty">英語（QWERTY）</string>
     <string name="keyboard_type_romaji">日本語 - ローマ字</string>
+    <string name="category_romaji_flick12_title">ローマ字12キー</string>
+    <string name="romaji_flick12_popup_delay_title">フリック補助表示までの長押し時間（ms）</string>
+    <string name="romaji_flick12_popup_delay_summary">単押しでは上下左右の補助表示を出さず、この時間だけ押し続けるかスワイプを始めてから表示します。0で即時表示。</string>
     <string name="keyboard_type_romaji_flick12">日本語 - ローマ字 12キーフリック</string>
     <string name="romaji_flick12_keymap_guide_summary">キーの上下左右に、フリックで入力できる文字を表示します。</string>
     <string name="keyboard_type_custom">カスタム - ユーザー定義</string>

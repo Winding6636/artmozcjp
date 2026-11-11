@@ -3,6 +3,8 @@ package com.kazumaproject.custom_keyboard.controller
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -59,6 +61,12 @@ class StandardFlickInputController(
     }
 
     var listener: StandardFlickListener? = null
+
+    // 0 なら従来どおり触れた瞬間に出す。0 より大きいと、長押しかスワイプが始まるまで出さない。
+    var popupShowDelayMillis: Long = 0L
+    private val delayHandler = Handler(Looper.getMainLooper())
+    private var pendingPopupShow: Runnable? = null
+    private var popupRevealed = false
     private var popupWindowAnchorProvider: (() -> View?)? = null
     private var characterMap: Map<FlickDirection, String> = emptyMap()
     private var anchorView: View? = null
@@ -159,7 +167,12 @@ class StandardFlickInputController(
                 initialTouchY = event.rawY
                 listener?.onPress(characterMap[FlickDirection.TAP] ?: "")
                 segmentedDrawable?.highlightDirection = FlickDirection.TAP
-                showPopup(FlickDirection.TAP, refreshSkinGuide = true)
+                popupRevealed = popupShowDelayMillis <= 0L
+                if (popupRevealed) {
+                    showPopup(FlickDirection.TAP, refreshSkinGuide = true)
+                } else {
+                    schedulePopupReveal()
+                }
                 return true
             }
 
@@ -169,7 +182,11 @@ class StandardFlickInputController(
                 )
                 val direction = calculateDirection(dx, dy)
                 segmentedDrawable?.highlightDirection = direction
-                showPopup(direction)
+                if (!popupRevealed && direction != FlickDirection.TAP) {
+                    revealPopupNow(direction)
+                } else if (popupRevealed) {
+                    showPopup(direction)
+                }
                 listener?.onSelectionChanged(
                     characterMap[direction]?.takeIf(String::isNotEmpty),
                     direction != FlickDirection.TAP
@@ -204,6 +221,27 @@ class StandardFlickInputController(
             }
         }
         return false
+    }
+
+    private fun schedulePopupReveal() {
+        cancelPendingPopupReveal()
+        val task = Runnable {
+            pendingPopupShow = null
+            if (anchorView != null && !popupRevealed) revealPopupNow(FlickDirection.TAP)
+        }
+        pendingPopupShow = task
+        delayHandler.postDelayed(task, popupShowDelayMillis)
+    }
+
+    private fun cancelPendingPopupReveal() {
+        pendingPopupShow?.let(delayHandler::removeCallbacks)
+        pendingPopupShow = null
+    }
+
+    private fun revealPopupNow(direction: FlickDirection) {
+        cancelPendingPopupReveal()
+        popupRevealed = true
+        showPopup(direction, refreshSkinGuide = true)
     }
 
     private fun showPopup(direction: FlickDirection, refreshSkinGuide: Boolean = false) {
@@ -281,6 +319,8 @@ class StandardFlickInputController(
     }.toMap()
 
     private fun dismissPopup(animateSkinRelease: Boolean = false) {
+        cancelPendingPopupReveal()
+        popupRevealed = false
         if (popupWindow.isShowing) {
             popupWindow.dismiss()
         }

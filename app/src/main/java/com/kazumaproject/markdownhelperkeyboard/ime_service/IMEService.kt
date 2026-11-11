@@ -749,6 +749,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private var sumireKeymapGuideSettings = ModeKeymapGuideSettings()
     private var customKeymapGuidePreference: Boolean = false
     private var romajiFlick12KeymapGuidePreference: Boolean = true
+    private var romajiFlick12PopupDelayPreference: Int = 150
     private var flickGuideTextSizeSpPreference: Int? = 9
     private var flickGuideMaxCharactersPreference: Int? = 1
 
@@ -4410,6 +4411,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
         customKeymapGuidePreference = appPreference.flick_keymap_guide_layout ?: false
         romajiFlick12KeymapGuidePreference = appPreference.romaji_flick12_keymap_guide
+        romajiFlick12PopupDelayPreference = appPreference.romaji_flick12_popup_delay_ms
         runtimeGestureSettingsSource.update(
             flickSensitivity = sensitivity,
             flickThresholdShape = thresholdShape,
@@ -4724,6 +4726,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
         customKeymapGuidePreference = preferences.customKeymapGuide
         romajiFlick12KeymapGuidePreference = preferences.romajiFlick12KeymapGuide
+        romajiFlick12PopupDelayPreference = appPreference.romaji_flick12_popup_delay_ms
         flickGuideTextSizeSpPreference = preferences.flickGuideTextSizeSp
         flickGuideMaxCharactersPreference = preferences.flickGuideMaxCharacters
         if (splitController != null || splitLoadingJob?.isActive == true) {
@@ -11419,6 +11422,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             sumireSettings = sumireKeymapGuideSettings,
             customGuideEnabled = customKeymapGuidePreference,
             romajiFlick12GuideEnabled = romajiFlick12KeymapGuidePreference
+        )
+        flickView.setStandardPopupShowDelayMillis(
+            if (surface == FlickGuideSurface.RomajiFlick12) romajiFlick12PopupDelayPreference.toLong() else 0L
         )
         flickView.setFlickGuideEnabled(
             enabled = config.enabled,
