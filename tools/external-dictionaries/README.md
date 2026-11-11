@@ -16,4 +16,7 @@ python3 build_dictionaries.py --src <dir> --out <dir>
 | `place-names.tsv` | Japan Post postal code data | no copyright claimed |
 | `skk-personal-only.tsv` | skk-dev/dict | GPL: personal use only, do not commit |
 
-The data files are not stored in this repository.
+`hand_written/` holds small word lists written by hand (IT terms and
+subculture terms). They contain no third-party dictionary data.
+
+The converted dictionary files are not stored in this repository.
