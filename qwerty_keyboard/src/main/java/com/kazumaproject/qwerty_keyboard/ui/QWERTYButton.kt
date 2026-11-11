@@ -64,6 +64,12 @@ class QWERTYButton @JvmOverloads constructor(
         )
     }
 
+    private val guideInsetPx: Float = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        GUIDE_INSET_DP,
+        context.resources.displayMetrics
+    )
+
     init {
         isAllCaps = false
     }
@@ -91,16 +97,16 @@ class QWERTYButton @JvmOverloads constructor(
         // topRightCharがnullでなければ文字を描画する
         topRightChar?.toString()?.let { charText ->
             // 描画位置を計算 (ボタンの右上、少し内側)
-            val x = (width - paddingRight).toFloat()
-            val y = paddingTop.toFloat() + topRightPaint.textSize
+            val x = (width - paddingRight).toFloat() - guideInsetPx
+            val y = paddingTop.toFloat() + guideInsetPx / 2f + topRightPaint.textSize
 
             // Canvasに文字を描画
             canvas.drawText(charText, x, y, topRightPaint)
         }
 
         bottomRightChar?.toString()?.let { charText ->
-            val x = (width - paddingRight).toFloat()
-            val y = height - paddingBottom.toFloat() - topRightPaint.fontMetrics.descent
+            val x = (width - paddingRight).toFloat() - guideInsetPx
+            val y = height - paddingBottom.toFloat() - guideInsetPx / 2f - topRightPaint.fontMetrics.descent
             canvas.drawText(charText, x, y, topRightPaint)
         }
     }
@@ -124,7 +130,8 @@ class QWERTYButton @JvmOverloads constructor(
     }
 
     private companion object {
-        const val DEFAULT_GUIDE_TEXT_SIZE_SP = 9f
+        const val DEFAULT_GUIDE_TEXT_SIZE_SP = 11f
+        const val GUIDE_INSET_DP = 5f
         const val MIN_GUIDE_TEXT_SIZE_SP = 4f
         const val MAX_GUIDE_TEXT_SIZE_SP = 24f
     }

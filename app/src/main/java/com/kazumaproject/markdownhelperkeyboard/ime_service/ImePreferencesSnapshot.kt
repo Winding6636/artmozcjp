@@ -680,9 +680,9 @@ data class ImePreferencesSnapshot(
                 qwertyKeyIndentLarge = appPreference.qwerty_key_indent_large ?: 23.0f,
                 qwertyKeyIndentSmall = appPreference.qwerty_key_indent_small ?: 9.0f,
                 qwertyKeySideMargin = appPreference.qwerty_key_side_margin ?: 4.0f,
-                qwertyKeyTextSize = appPreference.qwerty_key_text_size ?: 18.0f,
+                qwertyKeyTextSize = appPreference.qwerty_key_text_size ?: 22.0f,
                 qwertySymbolKeymapTextSize =
-                    appPreference.qwerty_symbol_keymap_text_size ?: 9.0f,
+                    appPreference.qwerty_symbol_keymap_text_size ?: 11.0f,
                 qwertySpecialKeyTextSize = appPreference.qwerty_special_key_text_size ?: 12.0f,
                 qwertySpecialKeyIconSize = appPreference.qwerty_special_key_icon_size ?: 18.0f,
                 keyboardSkin = appPreference.keyboardSkin,

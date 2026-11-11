@@ -195,6 +195,12 @@ class QWERTYKeyboardView @JvmOverloads constructor(
         } else super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        // 余白はボタンの確定した大きさから求めるので、レイアウトが済んだ後でないと計算し直せない。
+        post { updateSpecialKeyIconSizes() }
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         val base = if (!geometry.isDefault && geometryBaseHeight > 0 && height > geometryBaseHeight) geometryBaseHeight else height
         super.onLayout(changed, left, top, right, top + base)
@@ -255,7 +261,7 @@ class QWERTYKeyboardView @JvmOverloads constructor(
     private var keyIndentSmallDp: Float = 9f
     private var keySideMarginDp: Float = 4f
     private var keyTextSizeSp: Float = 20f
-    private var symbolKeymapTextSizeSp: Float = 9f
+    private var symbolKeymapTextSizeSp: Float = 11f
     private var specialKeyTextSizeSp: Float = 12f
     private var specialKeyIconSizeDp: Float = 18f
     private var pendingSpecialIconSizeRefresh = false
@@ -1226,20 +1232,20 @@ class QWERTYKeyboardView @JvmOverloads constructor(
         buttons.forEach {
             when (it.id) {
                 R.id.key_a -> it.topRightChar = '@'
-                R.id.key_b -> it.topRightChar = ';'
+                R.id.key_b -> it.topRightChar = ':'
                 R.id.key_c -> it.topRightChar = '\''
-                R.id.key_d -> it.topRightChar = '￥'
+                R.id.key_d -> it.topRightChar = '&'
                 R.id.key_e -> it.topRightChar = if (hasNumberRow) '|' else '3'
-                R.id.key_f -> it.topRightChar = '_'
-                R.id.key_g -> it.topRightChar = '&'
-                R.id.key_h -> it.topRightChar = '-'
+                R.id.key_f -> it.topRightChar = 'ー'
+                R.id.key_g -> it.topRightChar = '+'
+                R.id.key_h -> it.topRightChar = '/'
                 R.id.key_i -> it.topRightChar = if (hasNumberRow) '>' else '8'
-                R.id.key_j -> it.topRightChar = '+'
+                R.id.key_j -> it.topRightChar = '%'
                 R.id.key_k -> it.topRightChar = '('
                 R.id.key_at_mark -> it.topRightChar = ')'
                 R.id.key_l -> it.topRightChar = '/'
-                R.id.key_m -> it.topRightChar = '?'
-                R.id.key_n -> it.topRightChar = '!'
+                R.id.key_m -> it.topRightChar = '_'
+                R.id.key_n -> it.topRightChar = ';'
                 R.id.key_o -> it.topRightChar = if (hasNumberRow) '{' else '9'
                 R.id.key_p -> it.topRightChar = if (hasNumberRow) '}' else '0'
                 R.id.key_q -> it.topRightChar = if (hasNumberRow) '%' else '1'
@@ -1247,9 +1253,9 @@ class QWERTYKeyboardView @JvmOverloads constructor(
                 R.id.key_s -> it.topRightChar = '#'
                 R.id.key_t -> it.topRightChar = if (hasNumberRow) '[' else '5'
                 R.id.key_u -> it.topRightChar = if (hasNumberRow) '<' else '7'
-                R.id.key_v -> it.topRightChar = ':'
+                R.id.key_v -> it.topRightChar = '"'
                 R.id.key_w -> it.topRightChar = if (hasNumberRow) '\\' else '2'
-                R.id.key_x -> it.topRightChar = '"'
+                R.id.key_x -> it.topRightChar = '='
                 R.id.key_y -> it.topRightChar = if (hasNumberRow) ']' else '6'
                 R.id.key_z -> it.topRightChar = '*'
             }
@@ -1262,19 +1268,19 @@ class QWERTYKeyboardView @JvmOverloads constructor(
         buttons.forEach {
             when (it.id) {
                 R.id.key_a -> it.topRightChar = '@'
-                R.id.key_b -> it.topRightChar = ';'
+                R.id.key_b -> it.topRightChar = ':'
                 R.id.key_c -> it.topRightChar = '\''
-                R.id.key_d -> it.topRightChar = '$'
+                R.id.key_d -> it.topRightChar = '&'
                 R.id.key_e -> it.topRightChar = if (hasNumberRow) '|' else '3'
-                R.id.key_f -> it.topRightChar = '_'
-                R.id.key_g -> it.topRightChar = '&'
-                R.id.key_h -> it.topRightChar = '-'
+                R.id.key_f -> it.topRightChar = '-'
+                R.id.key_g -> it.topRightChar = '+'
+                R.id.key_h -> it.topRightChar = '/'
                 R.id.key_i -> it.topRightChar = if (hasNumberRow) '>' else '8'
-                R.id.key_j -> it.topRightChar = '+'
+                R.id.key_j -> it.topRightChar = '%'
                 R.id.key_k -> it.topRightChar = '('
                 R.id.key_l -> it.topRightChar = ')'
-                R.id.key_m -> it.topRightChar = '?'
-                R.id.key_n -> it.topRightChar = '!'
+                R.id.key_m -> it.topRightChar = '_'
+                R.id.key_n -> it.topRightChar = ';'
                 R.id.key_o -> it.topRightChar = if (hasNumberRow) '{' else '9'
                 R.id.key_p -> it.topRightChar = if (hasNumberRow) '}' else '0'
                 R.id.key_q -> it.topRightChar = if (hasNumberRow) '%' else '1'
@@ -1282,9 +1288,9 @@ class QWERTYKeyboardView @JvmOverloads constructor(
                 R.id.key_s -> it.topRightChar = '#'
                 R.id.key_t -> it.topRightChar = if (hasNumberRow) '[' else '5'
                 R.id.key_u -> it.topRightChar = if (hasNumberRow) '<' else '7'
-                R.id.key_v -> it.topRightChar = ':'
+                R.id.key_v -> it.topRightChar = '"'
                 R.id.key_w -> it.topRightChar = if (hasNumberRow) '\\' else '2'
-                R.id.key_x -> it.topRightChar = '"'
+                R.id.key_x -> it.topRightChar = '='
                 R.id.key_y -> it.topRightChar = if (hasNumberRow) ']' else '6'
                 R.id.key_z -> it.topRightChar = '*'
             }

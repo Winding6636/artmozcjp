@@ -2210,7 +2210,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
     private var qwertyKeyIndentLarge: Float? = 23.0f
     private var qwertyKeyIndentSmall: Float? = 9.0f
     private var qwertyKeySideMargin: Float? = 4.0f
-    private var qwertyKeyTextSize: Float? = 18.0f
+    private var qwertyKeyTextSize: Float? = 22.0f
     private var qwertySymbolKeymapTextSize: Float? = 9.0f
     private var qwertySpecialKeyTextSize: Float? = 12.0f
     private var qwertySpecialKeyIconSize: Float? = 18.0f
@@ -6895,8 +6895,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     indentLargeDp = qwertyKeyIndentLarge ?: 23.0f,
                     indentSmallDp = qwertyKeyIndentSmall ?: 9.0f,
                     sideMarginDp = qwertyKeySideMargin ?: 4.0f,
-                    textSizeSp = qwertyKeyTextSize ?: 18.0f,
-                    symbolKeymapTextSizeSp = qwertySymbolKeymapTextSize ?: 9.0f,
+                    textSizeSp = qwertyKeyTextSize ?: 22.0f,
+                    symbolKeymapTextSizeSp = qwertySymbolKeymapTextSize ?: 11.0f,
                     specialTextSizeSp = qwertySpecialKeyTextSize ?: 12.0f,
                     specialIconSizeDp = qwertySpecialKeyIconSize ?: 18.0f
                 )
@@ -25804,8 +25804,8 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 indentLargeDp = qwertyKeyIndentLarge ?: 23.0f,
                 indentSmallDp = qwertyKeyIndentSmall ?: 9.0f,
                 sideMarginDp = qwertyKeySideMargin ?: 4.0f,
-                textSizeSp = qwertyKeyTextSize ?: 18.0f,
-                symbolKeymapTextSizeSp = qwertySymbolKeymapTextSize ?: 9.0f,
+                textSizeSp = qwertyKeyTextSize ?: 22.0f,
+                symbolKeymapTextSizeSp = qwertySymbolKeymapTextSize ?: 11.0f,
                 specialTextSizeSp = qwertySpecialKeyTextSize ?: 12.0f,
                 specialIconSizeDp = qwertySpecialKeyIconSize ?: 18.0f
             )
