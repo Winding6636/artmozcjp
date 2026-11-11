@@ -57,6 +57,12 @@ class AutoSizeButton @JvmOverloads constructor(
     }
 
     private var flickGuideLabels: FlickGuideLabels? = null
+    var guideUsesFullKeyArea: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            invalidate()
+        }
     private var flickGuideTextColor: Int = Color.BLACK
     private var flickGuideTextSizeSp: Float? = null
 
@@ -169,8 +175,13 @@ class AutoSizeButton @JvmOverloads constructor(
         val labels = flickGuideLabels ?: return
         if (!labels.hasVisibleGuides() && !shouldDrawCenterTap(labels)) return
 
-        val availableWidth = width - paddingLeft - paddingRight
-        val availableHeight = height - paddingTop - paddingBottom
+        val guidePadLeft = if (guideUsesFullKeyArea) 0 else paddingLeft
+        val guidePadRight = if (guideUsesFullKeyArea) 0 else paddingRight
+        val guidePadTop = if (guideUsesFullKeyArea) 0 else paddingTop
+        val guidePadBottom = if (guideUsesFullKeyArea) 0 else paddingBottom
+
+        val availableWidth = width - guidePadLeft - guidePadRight
+        val availableHeight = height - guidePadTop - guidePadBottom
         if (availableWidth <= 0 || availableHeight <= 0) return
 
         val minContentSize = min(availableWidth, availableHeight).toFloat()
@@ -193,20 +204,21 @@ class AutoSizeButton @JvmOverloads constructor(
         val centerX = width / 2f
         val centerY = height / 2f
         val guideFm = guidePaint.fontMetrics
-        val topBaseline = paddingTop + dpToPx(3) - guideFm.ascent
-        val bottomBaseline = height - paddingBottom - dpToPx(3) - guideFm.descent
+        val topBaseline = guidePadTop + dpToPx(3) - guideFm.ascent
+        val bottomBaseline = height - guidePadBottom - dpToPx(3) - guideFm.descent
         val sideBaseline = centerY - (guideFm.ascent + guideFm.descent) / 2f
-        val sideInset = maxOf(dpToPx(10).toFloat(), availableWidth * 0.16f)
+        val sideInset = if (guideUsesFullKeyArea) dpToPx(11).toFloat()
+        else maxOf(dpToPx(10).toFloat(), availableWidth * 0.16f)
         val cornerInsetX = maxOf(dpToPx(8).toFloat(), availableWidth * 0.22f)
 
-        drawGuideText(canvas, labels.upLeft, paddingLeft + cornerInsetX, topBaseline)
+        drawGuideText(canvas, labels.upLeft, guidePadLeft + cornerInsetX, topBaseline)
         drawGuideText(canvas, labels.up, centerX, topBaseline)
-        drawGuideText(canvas, labels.upRight, width - paddingRight - cornerInsetX, topBaseline)
-        drawGuideText(canvas, labels.right, width - paddingRight - sideInset, sideBaseline)
-        drawGuideText(canvas, labels.downRight, width - paddingRight - cornerInsetX, bottomBaseline)
+        drawGuideText(canvas, labels.upRight, width - guidePadRight - cornerInsetX, topBaseline)
+        drawGuideText(canvas, labels.right, width - guidePadRight - sideInset, sideBaseline)
+        drawGuideText(canvas, labels.downRight, width - guidePadRight - cornerInsetX, bottomBaseline)
         drawGuideText(canvas, labels.down, centerX, bottomBaseline)
-        drawGuideText(canvas, labels.downLeft, paddingLeft + cornerInsetX, bottomBaseline)
-        drawGuideText(canvas, labels.left, paddingLeft + sideInset, sideBaseline)
+        drawGuideText(canvas, labels.downLeft, guidePadLeft + cornerInsetX, bottomBaseline)
+        drawGuideText(canvas, labels.left, guidePadLeft + sideInset, sideBaseline)
 
         if (shouldDrawCenterTap(labels)) {
             val centerFm = centerGuidePaint.fontMetrics

@@ -114,6 +114,7 @@ object RomajiFlick12KeyLayout {
             columnCount = 5,
             rowCount = 4,
             isRomaji = isRomaji,
+            usesUniformGrid = true,
         )
     }
 
@@ -163,6 +164,7 @@ object RomajiFlick12KeyLayout {
             columnCount = 5,
             rowCount = 5,
             isRomaji = true,
+            usesUniformGrid = true,
         )
     }
 

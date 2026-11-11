@@ -606,7 +606,8 @@ data class KeyboardLayout(
     val columnUnitCount: Int = columnCount * 2,
     val rowUnitCount: Int = rowCount * 2,
     val isFlexiblePlacementLayout: Boolean = false,
-    val usageMode: KeyboardLayoutUsageMode = KeyboardLayoutUsageMode.Normal
+    val usageMode: KeyboardLayoutUsageMode = KeyboardLayoutUsageMode.Normal,
+    val usesUniformGrid: Boolean = false
 )
 
 /**

@@ -1086,7 +1086,10 @@ class FlickKeyboardView @JvmOverloads constructor(
                 val baseHorizontalMarginDp: Int
                 val baseVerticalMarginDp: Int
 
-                if (keyData.keyType == KeyType.STANDARD_FLICK) {
+                if (currentLayout?.usesUniformGrid == true) {
+                    baseHorizontalMarginDp = 4
+                    baseVerticalMarginDp = 6
+                } else if (keyData.keyType == KeyType.STANDARD_FLICK) {
                     baseHorizontalMarginDp = 6
                     baseVerticalMarginDp = 9
                 } else if (keyData.isSpecialKey) {
@@ -1454,6 +1457,7 @@ class FlickKeyboardView @JvmOverloads constructor(
             button.text = labels.tap
             button.refreshTextSize()
         }
+        button.guideUsesFullKeyArea = currentLayout?.usesUniformGrid == true
         button.setFlickGuideLabels(labels, getGuideTextColor(keyData))
     }
 
