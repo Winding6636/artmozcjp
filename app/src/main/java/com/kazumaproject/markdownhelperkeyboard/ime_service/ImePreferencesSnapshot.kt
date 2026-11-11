@@ -468,7 +468,7 @@ data class ImePreferencesSnapshot(
                 qwertyShowNumberButtonsPreference = appPreference.qwerty_show_number_buttons
                     ?: false,
                 qwertyShowSwitchRomajiEnglishPreference =
-                    appPreference.qwerty_show_switch_romaji_english_button ?: true,
+                    appPreference.qwerty_show_switch_romaji_english_button ?: false,
                 qwertyEnglishDirectInputPreference =
                     appPreference.qwerty_english_direct_input_preference,
                 qwertyGlideInputPreference = appPreference.qwerty_glide_input_preference,

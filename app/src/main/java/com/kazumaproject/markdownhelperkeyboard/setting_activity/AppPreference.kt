@@ -381,7 +381,7 @@ object AppPreference {
         Pair("qwerty_number_key_flick_down_chars", "{}")
 
     private val QWERTY_SHOW_SWITCH_ROMAJI_ENGLISH =
-        Pair("qwerty_show_switch_romaji_english_preference", true)
+        Pair("qwerty_show_switch_romaji_english_preference", false)
 
     private val QWERTY_ENGLISH_DIRECT_INPUT_PREFERENCE =
         Pair("qwerty_english_direct_input_preference", false)
@@ -1611,7 +1611,7 @@ object AppPreference {
             QWERTY_SHOW_SWITCH_ROMAJI_ENGLISH.first, QWERTY_SHOW_SWITCH_ROMAJI_ENGLISH.second
         )
         set(value) = preferences.edit {
-            it.putBoolean(QWERTY_SHOW_SWITCH_ROMAJI_ENGLISH.first, value ?: true)
+            it.putBoolean(QWERTY_SHOW_SWITCH_ROMAJI_ENGLISH.first, value ?: false)
         }
 
     var qwerty_english_direct_input_preference: Boolean
