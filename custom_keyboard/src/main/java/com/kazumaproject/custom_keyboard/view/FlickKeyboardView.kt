@@ -1461,6 +1461,19 @@ class FlickKeyboardView @JvmOverloads constructor(
         button.setFlickGuideLabels(labels, getGuideTextColor(keyData))
     }
 
+    private fun crossFlickActionGuideLabels(
+        actionMap: Map<FlickDirection, FlickAction>
+    ): AutoSizeButton.FlickGuideLabels {
+        fun label(direction: FlickDirection): String =
+            (actionMap[direction] as? FlickAction.Action)?.label.orEmpty()
+        return AutoSizeButton.FlickGuideLabels(
+            up = label(FlickDirection.UP),
+            right = label(FlickDirection.UP_RIGHT_FAR),
+            down = label(FlickDirection.DOWN),
+            left = label(FlickDirection.UP_LEFT_FAR)
+        )
+    }
+
     private fun isSingleGuideCharacter(value: String): Boolean {
         return value.isNotEmpty() && value.codePointCount(0, value.length) == 1
     }
@@ -1873,6 +1886,13 @@ class FlickKeyboardView @JvmOverloads constructor(
                 val flickActionMap = rawFlickActionMap?.refreshSumireSpecialKeyTap(keyData)
                 Log.d("FlickKeyboardView KeyType.CROSS_FLICK", "$flickActionMap")
                 if (flickActionMap != null) {
+                    if (currentLayout?.usesUniformGrid == true && keyView is AutoSizeButton) {
+                        keyView.guideUsesFullKeyArea = true
+                        keyView.setFlickGuideLabels(
+                            crossFlickActionGuideLabels(flickActionMap),
+                            getGuideTextColor(keyData)
+                        )
+                    }
                     val displayFlickActionMap =
                         buildSumireSpecialKeyDisplayActionMap(keyData, flickActionMap) { data, direction ->
                             resolveSumireSpecialKeyOverride(data, direction)

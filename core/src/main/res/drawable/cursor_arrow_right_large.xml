@@ -7,5 +7,5 @@
     android:viewportHeight="960">
     <path
         android:fillColor="@color/keyboard_icon_color"
-        android:pathData="M260,200L700,480L260,760Z" />
+        android:pathData="M160,120L800,480L160,840Z" />
 </vector>

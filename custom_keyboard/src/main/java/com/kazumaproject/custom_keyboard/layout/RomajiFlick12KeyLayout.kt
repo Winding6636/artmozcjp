@@ -37,6 +37,7 @@ object RomajiFlick12KeyLayout {
 
     const val MODE_KEY_ID = "romaji_flick12_mode"
     const val SPACE_KEY_ID = "romaji_flick12_space"
+    const val SPACE_LABEL = "\u2423"
     const val MODE_LABEL_JAPANESE = "あa\uD83C\uDF10"
     const val MODE_LABEL_ENGLISH = "ぁA\uD83C\uDF10"
 
@@ -187,8 +188,7 @@ object RomajiFlick12KeyLayout {
             null
         },
         KeyData(
-            label = "", row = spaceRow, column = 4, isFlickable = false, isSpecialKey = true,
-            drawableResId = com.kazumaproject.core.R.drawable.baseline_space_bar_24,
+            label = SPACE_LABEL, row = spaceRow, column = 4, isFlickable = false, isSpecialKey = true,
             keyId = SPACE_KEY_ID, keyType = KeyType.CROSS_FLICK,
         ),
         if (enterRow != null) {
@@ -203,8 +203,8 @@ object RomajiFlick12KeyLayout {
 
     private fun spaceFlickMap(): Map<FlickDirection, FlickAction> = mapOf(
         FlickDirection.TAP to FlickAction.Action(KeyAction.Space),
-        FlickDirection.UP to FlickAction.Action(KeyAction.ForceFullWidthSpace, label = "全角"),
-        FlickDirection.UP_LEFT_FAR to FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"),
+        FlickDirection.UP to FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"),
+        FlickDirection.UP_LEFT_FAR to FlickAction.Action(KeyAction.ForceFullWidthSpace),
         FlickDirection.DOWN to FlickAction.Action(KeyAction.ToggleKatakana, label = "カナ"),
     )
 
