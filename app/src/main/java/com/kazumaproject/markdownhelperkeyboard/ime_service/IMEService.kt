@@ -6855,9 +6855,7 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                 gojuonView.setIndependentMultiTouchEnabled(appPreference.independent_multi_touch_preference)
                 gojuonView.setLongPressTimeout((longPressTimeoutPreferenceValue ?: 300).toLong())
                 applyCurrentFlickGuidePreference(customLayoutDefault)
-                customLayoutDefault.setFlickGuideTextSizeSp(
-                    (flickGuideTextSizeSpPreference ?: 9).coerceIn(6, 16).toFloat()
-                )
+                customLayoutDefault.setFlickGuideTextSizeSp(resolveFlickGuideTextSizeSp())
                 customLayoutDefault.setFlickGuideMaxCodePoints(
                     (flickGuideMaxCharactersPreference ?: 1).coerceIn(1, 4)
                 )
@@ -11340,6 +11338,27 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
     }
 
+    private fun resolveFlickKeyTextSizeSp(): Float =
+        if (isRomajiFlick12Active && !appPreference.hasFlickKeyTextSizeSp()) {
+            ROMAJI_FLICK12_DEFAULT_KEY_TEXT_SP
+        } else {
+            appPreference.flick_key_text_size_sp ?: 16f
+        }
+
+    private fun resolveFlickSpecialKeyTextSizeSp(fallback: Float): Float =
+        if (isRomajiFlick12Active && !appPreference.hasFlickSpecialKeyTextSizeSp()) {
+            ROMAJI_FLICK12_DEFAULT_SPECIAL_KEY_TEXT_SP
+        } else {
+            appPreference.flick_special_key_text_size_sp ?: fallback
+        }
+
+    private fun resolveFlickGuideTextSizeSp(): Float =
+        if (isRomajiFlick12Active && !appPreference.hasFlickGuideTextSizeSp()) {
+            ROMAJI_FLICK12_DEFAULT_GUIDE_TEXT_SP
+        } else {
+            (flickGuideTextSizeSpPreference ?: 9).coerceIn(6, 16).toFloat()
+        }
+
     private fun setKeyboardWithDeleteKeyFlickPreferences(
         flickView: FlickKeyboardView,
         layout: KeyboardLayout,
@@ -11350,24 +11369,10 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             appPreference.flick_key_width_scale_percent ?: 160,
             appPreference.flick_key_height_scale_percent ?: 160,
             appPreference.flick_key_icon_scale_percent ?: 80,
-            if (isRomajiFlick12Active && !appPreference.hasFlickKeyTextSizeSp()) {
-                ROMAJI_FLICK12_DEFAULT_KEY_TEXT_SP
-            } else {
-                appPreference.flick_key_text_size_sp ?: 16f
-            },
-            if (isRomajiFlick12Active && !appPreference.hasFlickSpecialKeyTextSizeSp()) {
-                ROMAJI_FLICK12_DEFAULT_SPECIAL_KEY_TEXT_SP
-            } else {
-                appPreference.flick_special_key_text_size_sp ?: 12f
-            }
+            resolveFlickKeyTextSizeSp(),
+            resolveFlickSpecialKeyTextSizeSp(fallback = 12f)
         )
-        flickView.setFlickGuideTextSizeSp(
-            if (isRomajiFlick12Active && !appPreference.hasFlickGuideTextSizeSp()) {
-                ROMAJI_FLICK12_DEFAULT_GUIDE_TEXT_SP
-            } else {
-                (flickGuideTextSizeSpPreference ?: 9).coerceIn(6, 16).toFloat()
-            }
-        )
+        flickView.setFlickGuideTextSizeSp(resolveFlickGuideTextSizeSp())
         flickView.setKeyboard(
             if (isUserDefinedCustomLayout) KeyboardDefaultLayouts.applyDeleteKeyFlickSettings(
                 layout, currentDeleteKeyFlickSettings().copy(down = true)
@@ -15887,14 +15892,12 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             keyWidthScalePercent = appPreference.flick_key_width_scale_percent ?: 160,
             keyHeightScalePercent = appPreference.flick_key_height_scale_percent ?: 160,
             iconScalePercent = appPreference.flick_key_icon_scale_percent ?: 80,
-            textSizeSp = appPreference.flick_key_text_size_sp ?: 16.0f,
-            specialKeyTextSizeSp = appPreference.flick_special_key_text_size_sp ?: 16.0f
+            textSizeSp = resolveFlickKeyTextSizeSp(),
+            specialKeyTextSizeSp = resolveFlickSpecialKeyTextSizeSp(fallback = 16.0f)
         )
         flickView.applyPopupViewStyleSet(currentFlickPopupViewStyleSet())
         applyCurrentFlickGuidePreference(flickView)
-        flickView.setFlickGuideTextSizeSp(
-            (flickGuideTextSizeSpPreference ?: 9).coerceIn(6, 16).toFloat()
-        )
+        flickView.setFlickGuideTextSizeSp(resolveFlickGuideTextSizeSp())
         flickView.setFlickGuideMaxCodePoints(
             (flickGuideMaxCharactersPreference ?: 1).coerceIn(1, 4)
         )
