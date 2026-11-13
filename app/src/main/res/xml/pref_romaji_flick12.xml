@@ -33,6 +33,59 @@
             android:title="@string/flick_keymap_guide_title"
             app:defaultValue="true"
             app:summary="@string/romaji_flick12_keymap_guide_summary" />
+
+        <SwitchPreferenceCompat
+            android:key="romaji_flick12_english_mode_enabled"
+            android:title="@string/romaji_flick12_english_mode_title"
+            app:defaultValue="true"
+            app:summary="@string/romaji_flick12_english_mode_summary" />
+
+        <ListPreference
+            android:defaultValue="half_width_space"
+            android:entries="@array/romaji_flick12_space_flick_entries"
+            android:entryValues="@array/romaji_flick12_space_flick_values"
+            android:key="romaji_flick12_space_up"
+            android:title="@string/romaji_flick12_space_up_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="full_width_space"
+            android:entries="@array/romaji_flick12_space_flick_entries"
+            android:entryValues="@array/romaji_flick12_space_flick_values"
+            android:key="romaji_flick12_space_left"
+            android:title="@string/romaji_flick12_space_left_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="katakana"
+            android:entries="@array/romaji_flick12_space_flick_entries"
+            android:entryValues="@array/romaji_flick12_space_flick_values"
+            android:key="romaji_flick12_space_down"
+            android:title="@string/romaji_flick12_space_down_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="none"
+            android:entries="@array/romaji_flick12_space_flick_entries"
+            android:entryValues="@array/romaji_flick12_space_flick_values"
+            android:key="romaji_flick12_space_right"
+            android:title="@string/romaji_flick12_space_right_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SeekBarPreference
+            android:defaultValue="100"
+            android:key="romaji_flick12_flick_sensitivity"
+            android:max="200"
+            android:title="@string/romaji_flick12_sensitivity_title"
+            app:min="20"
+            app:showSeekBarValue="true"
+            app:summary="@string/romaji_flick12_sensitivity_summary" />
+
+        <SwitchPreferenceCompat
+            android:key="romaji_flick12_independent_multi_touch"
+            android:title="@string/romaji_flick12_multi_touch_title"
+            app:defaultValue="true"
+            app:summary="@string/romaji_flick12_multi_touch_summary" />
     </PreferenceCategory>
 
 </PreferenceScreen>

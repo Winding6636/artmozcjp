@@ -1975,4 +1975,20 @@ ABC abc 0123456789　ＡＢＣ　１２３４５
     <string name="mushroom_unsupported">Mushroom is unavailable in this input field</string>
     <string name="sumire_mode_key_highlight_title">Keep the selected mode key highlighted</string>
     <string name="sumire_mode_key_highlight_summary">In the flick key layout, keep the current Hiragana, English, or Number mode key highlighted after switching modes.</string>
+    <string name="romaji_flick12_english_mode_title">Use English mode (the "a" part)</string>
+    <string name="romaji_flick12_english_mode_summary">When off, the key only switches between Japanese input and other keyboards (globe).</string>
+    <string name="romaji_flick12_space_up_title">Space key: flick up</string>
+    <string name="romaji_flick12_space_left_title">Space key: flick left</string>
+    <string name="romaji_flick12_space_down_title">Space key: flick down</string>
+    <string name="romaji_flick12_space_right_title">Space key: flick right</string>
+    <string name="romaji_flick12_sensitivity_title">Flick sensitivity</string>
+    <string name="romaji_flick12_sensitivity_summary">Lower values recognise flicks with shorter movements. Independent from other keyboards.</string>
+    <string name="romaji_flick12_multi_touch_title">Follow rapid typing (independent multi-touch)</string>
+    <string name="romaji_flick12_multi_touch_summary">Keys pressed before the previous one is released are handled independently. For fast, flowing input.</string>
+    <string-array name="romaji_flick12_space_flick_entries">
+        <item>Half-width space</item><item>Full-width space</item><item>Katakana</item><item>None</item>
+    </string-array>
+    <string-array name="romaji_flick12_space_flick_values">
+        <item>half_width_space</item><item>full_width_space</item><item>katakana</item><item>none</item>
+    </string-array>
 </resources>

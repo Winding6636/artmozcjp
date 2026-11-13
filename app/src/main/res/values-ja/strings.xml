@@ -1973,4 +1973,20 @@ ABC abc 0123456789　ＡＢＣ　１２３４５
     <string name="mushroom_unsupported">この入力欄ではマッシュルームを使用できません</string>
     <string name="sumire_mode_key_highlight_title">選択中のモードキーのハイライトを残す</string>
     <string name="sumire_mode_key_highlight_summary">キーの配置がフリック入力の場合、モード切り替え後も、現在のひらがな・英語・数字のモードキーにハイライトを残します。</string>
+    <string name="romaji_flick12_english_mode_title">英数入力モード（aの部分）を使う</string>
+    <string name="romaji_flick12_english_mode_summary">オフにすると「あ🌐」キーは日本語入力と他のキーボード（地球儀）の切替だけになります。</string>
+    <string name="romaji_flick12_space_up_title">スペースキー 上フリック</string>
+    <string name="romaji_flick12_space_left_title">スペースキー 左フリック</string>
+    <string name="romaji_flick12_space_down_title">スペースキー 下フリック</string>
+    <string name="romaji_flick12_space_right_title">スペースキー 右フリック</string>
+    <string name="romaji_flick12_sensitivity_title">フリック感度</string>
+    <string name="romaji_flick12_sensitivity_summary">小さいほど短い動きでフリックと判定します。他のキーボードとは独立した値です。</string>
+    <string name="romaji_flick12_multi_touch_title">連続入力に追従（独立マルチタッチ）</string>
+    <string name="romaji_flick12_multi_touch_summary">前のキーを離す前に次のキーを押しても、それぞれ独立して入力します。流れるような素早い入力向けです。</string>
+    <string-array name="romaji_flick12_space_flick_entries">
+        <item>半角スペース</item><item>全角スペース</item><item>カタカナ変換</item><item>なし</item>
+    </string-array>
+    <string-array name="romaji_flick12_space_flick_values">
+        <item>half_width_space</item><item>full_width_space</item><item>katakana</item><item>none</item>
+    </string-array>
 </resources>

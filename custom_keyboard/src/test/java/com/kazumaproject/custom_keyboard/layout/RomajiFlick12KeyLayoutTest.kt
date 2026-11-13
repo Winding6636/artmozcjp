@@ -245,4 +245,35 @@ class RomajiFlick12KeyLayoutTest {
             (0..4).map { column -> number.keys.single { it.row == 4 && it.column == column }.action },
         )
     }
+
+    @Test
+    fun disablingEnglishModeRemovesTheEnglishFlickAndShowsAJapaneseOnlyLabel() {
+        val japaneseOnly = RomajiFlick12KeyLayout.create(options = RomajiFlick12Options(englishModeEnabled = false))
+        assertEquals(RomajiFlick12KeyLayout.MODE_LABEL_JAPANESE_ONLY, japaneseOnly.keys.single { it.row == 3 && it.column == 0 }.label)
+        assertEquals(
+            setOf(FlickDirection.TAP, FlickDirection.UP_RIGHT_FAR, FlickDirection.UP_LEFT_FAR),
+            actions(japaneseOnly, RomajiFlick12KeyLayout.MODE_KEY_ID).keys,
+        )
+    }
+
+    @Test
+    fun spaceFlickAssignmentsFollowTheOptionsAndNoneLeavesTheDirectionEmpty() {
+        val swapped = RomajiFlick12KeyLayout.create(
+            options = RomajiFlick12Options(
+                spaceUp = RomajiFlick12SpaceFlick.KATAKANA,
+                spaceDown = RomajiFlick12SpaceFlick.HALF_WIDTH_SPACE,
+                spaceLeft = RomajiFlick12SpaceFlick.NONE,
+                spaceRight = RomajiFlick12SpaceFlick.FULL_WIDTH_SPACE,
+            )
+        )
+        assertEquals(
+            mapOf(
+                FlickDirection.TAP to KeyAction.Space,
+                FlickDirection.UP to KeyAction.ToggleKatakana,
+                FlickDirection.DOWN to KeyAction.ForceHalfWidthSpace,
+                FlickDirection.UP_RIGHT_FAR to KeyAction.ForceFullWidthSpace,
+            ),
+            actions(swapped, RomajiFlick12KeyLayout.SPACE_KEY_ID),
+        )
+    }
 }

@@ -8,6 +8,16 @@ import com.kazumaproject.custom_keyboard.data.KeyType
 import com.kazumaproject.custom_keyboard.data.KeyboardLayout
 
 // かなを直接出力するキーは置かない。変換エンジンの手前をローマ字入力に統一して romaji モードに任せる。
+enum class RomajiFlick12SpaceFlick { HALF_WIDTH_SPACE, FULL_WIDTH_SPACE, KATAKANA, NONE }
+
+data class RomajiFlick12Options(
+    val englishModeEnabled: Boolean = true,
+    val spaceUp: RomajiFlick12SpaceFlick = RomajiFlick12SpaceFlick.HALF_WIDTH_SPACE,
+    val spaceLeft: RomajiFlick12SpaceFlick = RomajiFlick12SpaceFlick.FULL_WIDTH_SPACE,
+    val spaceDown: RomajiFlick12SpaceFlick = RomajiFlick12SpaceFlick.KATAKANA,
+    val spaceRight: RomajiFlick12SpaceFlick = RomajiFlick12SpaceFlick.NONE,
+)
+
 object RomajiFlick12KeyLayout {
 
     private data class FlickKeySpec(
@@ -39,6 +49,7 @@ object RomajiFlick12KeyLayout {
     const val SPACE_KEY_ID = "romaji_flick12_space"
     const val SPACE_LABEL = "\u2423"
     const val MODE_LABEL_JAPANESE = "あa\uD83C\uDF10"
+    const val MODE_LABEL_JAPANESE_ONLY = "あ\uD83C\uDF10"
     const val MODE_LABEL_ENGLISH = "ぁA\uD83C\uDF10"
 
     private val numberRows = listOf(
@@ -53,13 +64,19 @@ object RomajiFlick12KeyLayout {
         drawable = com.kazumaproject.core.R.drawable.baseline_emoji_emotions_24,
     )
 
-    private fun modeKeyFlickMap(isRomaji: Boolean): Map<FlickDirection, FlickAction> = mapOf(
-        FlickDirection.TAP to FlickAction.Action(KeyAction.SwitchRomajiEnglish),
-        FlickDirection.UP to if (isRomaji) {
-            FlickAction.Action(KeyAction.SwitchToEnglishLayout, label = "A")
-        } else {
-            FlickAction.Action(KeyAction.SwitchToKanaLayout, label = "あ")
-        },
+    private fun modeKeyFlickMap(isRomaji: Boolean, options: RomajiFlick12Options): Map<FlickDirection, FlickAction> = buildMap {
+        put(FlickDirection.TAP, FlickAction.Action(KeyAction.SwitchRomajiEnglish))
+        if (options.englishModeEnabled) {
+            put(
+                FlickDirection.UP,
+                if (isRomaji) FlickAction.Action(KeyAction.SwitchToEnglishLayout, label = "A")
+                else FlickAction.Action(KeyAction.SwitchToKanaLayout, label = "あ")
+            )
+        }
+        putAll(modeKeyCornerMap())
+    }
+
+    private fun modeKeyCornerMap(): Map<FlickDirection, FlickAction> = mapOf(
         FlickDirection.UP_RIGHT_FAR to FlickAction.Action(
             KeyAction.SwitchToNextIme,
             drawableResId = com.kazumaproject.core.R.drawable.language_24dp,
@@ -70,7 +87,7 @@ object RomajiFlick12KeyLayout {
         ),
     )
 
-    fun create(isRomaji: Boolean = true): KeyboardLayout {
+    fun create(isRomaji: Boolean = true, options: RomajiFlick12Options = RomajiFlick12Options()): KeyboardLayout {
         val topLeft = if (isRomaji) {
             emojiKey(row = 0, column = 0)
         } else {
@@ -87,7 +104,7 @@ object RomajiFlick12KeyLayout {
                 action = KeyAction.SwitchToNumberLayout, isSpecialKey = true,
             ),
             KeyData(
-                label = if (isRomaji) MODE_LABEL_JAPANESE else MODE_LABEL_ENGLISH, row = 3, column = 0, isFlickable = false,
+                label = modeLabel(isRomaji, options), row = 3, column = 0, isFlickable = false,
                 isSpecialKey = true, keyId = MODE_KEY_ID, keyType = KeyType.CROSS_FLICK,
             ),
         )
@@ -105,8 +122,8 @@ object RomajiFlick12KeyLayout {
         val flickMaps = flickKeySpecs.associate { spec ->
             spec.center.uppercase() to listOf(spec.toFlickMap(isRomaji))
         } + mapOf(
-            MODE_KEY_ID to listOf(modeKeyFlickMap(isRomaji)),
-            SPACE_KEY_ID to listOf(spaceFlickMap()),
+            MODE_KEY_ID to listOf(modeKeyFlickMap(isRomaji, options)),
+            SPACE_KEY_ID to listOf(spaceFlickMap(options)),
         )
 
         return KeyboardLayout(
@@ -119,7 +136,7 @@ object RomajiFlick12KeyLayout {
         )
     }
 
-    fun createNumber(): KeyboardLayout {
+    fun createNumber(options: RomajiFlick12Options = RomajiFlick12Options()): KeyboardLayout {
         val symbolKeys = numberRows.flatMapIndexed { row, labels ->
             labels.mapIndexed { index, label ->
                 KeyData(
@@ -157,7 +174,7 @@ object RomajiFlick12KeyLayout {
 
         val flickMaps = (numberRows.flatten() + listOf("/", "=")).associateWith { label ->
             listOf(mapOf<FlickDirection, FlickAction>(FlickDirection.TAP to FlickAction.Input(label)))
-        } + mapOf(SPACE_KEY_ID to listOf(spaceFlickMap()))
+        } + mapOf(SPACE_KEY_ID to listOf(spaceFlickMap(options)))
 
         return KeyboardLayout(
             keys = rightColumn(spaceRow = 3, enterRow = null) + symbolKeys + bottomBar,
@@ -201,12 +218,30 @@ object RomajiFlick12KeyLayout {
         },
     )
 
-    private fun spaceFlickMap(): Map<FlickDirection, FlickAction> = mapOf(
-        FlickDirection.TAP to FlickAction.Action(KeyAction.Space),
-        FlickDirection.UP to FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"),
-        FlickDirection.UP_LEFT_FAR to FlickAction.Action(KeyAction.ForceFullWidthSpace),
-        FlickDirection.DOWN to FlickAction.Action(KeyAction.ToggleKatakana, label = "カナ"),
-    )
+    private fun modeLabel(isRomaji: Boolean, options: RomajiFlick12Options): String = when {
+        options.englishModeEnabled -> if (isRomaji) MODE_LABEL_JAPANESE else MODE_LABEL_ENGLISH
+        else -> MODE_LABEL_JAPANESE_ONLY
+    }
+
+    private fun spaceFlickMap(options: RomajiFlick12Options): Map<FlickDirection, FlickAction> = buildMap {
+        put(FlickDirection.TAP, FlickAction.Action(KeyAction.Space))
+        mapOf(
+            FlickDirection.UP to options.spaceUp,
+            FlickDirection.UP_LEFT_FAR to options.spaceLeft,
+            FlickDirection.DOWN to options.spaceDown,
+            FlickDirection.UP_RIGHT_FAR to options.spaceRight,
+        ).forEach { (direction, assignment) ->
+            when (assignment) {
+                RomajiFlick12SpaceFlick.HALF_WIDTH_SPACE ->
+                    put(direction, FlickAction.Action(KeyAction.ForceHalfWidthSpace, label = "半角"))
+                RomajiFlick12SpaceFlick.FULL_WIDTH_SPACE ->
+                    put(direction, FlickAction.Action(KeyAction.ForceFullWidthSpace, label = "全角"))
+                RomajiFlick12SpaceFlick.KATAKANA ->
+                    put(direction, FlickAction.Action(KeyAction.ToggleKatakana, label = "カナ"))
+                RomajiFlick12SpaceFlick.NONE -> Unit
+            }
+        }
+    }
 
     private fun specialKey(
         row: Int,

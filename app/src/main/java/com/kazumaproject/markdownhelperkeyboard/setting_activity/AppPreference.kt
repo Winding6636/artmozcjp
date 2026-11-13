@@ -1494,6 +1494,23 @@ object AppPreference {
         get() = preferences.getInt("romaji_flick12_popup_delay_ms", 150)
         set(value) = preferences.edit { it.putInt("romaji_flick12_popup_delay_ms", value.coerceIn(0, 600)) }
 
+    var romaji_flick12_english_mode_enabled: Boolean
+        get() = preferences.getBoolean("romaji_flick12_english_mode_enabled", true)
+        set(value) = preferences.edit { it.putBoolean("romaji_flick12_english_mode_enabled", value) }
+
+    fun romajiFlick12SpaceFlick(direction: String, default: String): String =
+        preferences.getString("romaji_flick12_space_$direction", default) ?: default
+
+    var romaji_flick12_flick_sensitivity: Int
+        get() = preferences.getInt("romaji_flick12_flick_sensitivity", (flick_sensitivity_preference ?: 100))
+        set(value) = preferences.edit { it.putInt("romaji_flick12_flick_sensitivity", value.coerceIn(1, 200)) }
+
+    var romaji_flick12_independent_multi_touch: Boolean
+        get() = if (preferences.contains("romaji_flick12_independent_multi_touch")) {
+            preferences.getBoolean("romaji_flick12_independent_multi_touch", true)
+        } else independent_multi_touch_preference
+        set(value) = preferences.edit { it.putBoolean("romaji_flick12_independent_multi_touch", value) }
+
     var romaji_flick12_keymap_guide: Boolean
         get() = preferences.getBoolean(
             ROMAJI_FLICK12_KEYMAP_GUIDE_PREFERENCE.first,

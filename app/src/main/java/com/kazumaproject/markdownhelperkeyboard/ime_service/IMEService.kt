@@ -209,6 +209,8 @@ import com.kazumaproject.custom_keyboard.data.SumireFlickInputMode
 import com.kazumaproject.custom_keyboard.data.TfbiFlickRotation
 import com.kazumaproject.custom_keyboard.layout.KeyboardDefaultLayouts
 import com.kazumaproject.custom_keyboard.layout.RomajiFlick12KeyLayout
+import com.kazumaproject.custom_keyboard.layout.RomajiFlick12Options
+import com.kazumaproject.custom_keyboard.layout.RomajiFlick12SpaceFlick
 import com.kazumaproject.custom_keyboard.layout.KeyboardDefaultLayouts.DeleteKeyFlickSettings
 import com.kazumaproject.custom_keyboard.view.FlickKeyboardView
 import com.kazumaproject.custom_keyboard.view.KeyHitTestMode
@@ -11423,6 +11425,13 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
             customGuideEnabled = customKeymapGuidePreference,
             romajiFlick12GuideEnabled = romajiFlick12KeymapGuidePreference
         )
+        if (surface == FlickGuideSurface.RomajiFlick12) {
+            flickView.setFlickSensitivityValue(appPreference.romaji_flick12_flick_sensitivity)
+            flickView.setIndependentMultiTouchEnabled(appPreference.romaji_flick12_independent_multi_touch)
+        } else if (surface == FlickGuideSurface.Custom) {
+            flickView.setFlickSensitivityValue(flickSensitivityPreferenceValue ?: 100)
+            flickView.setIndependentMultiTouchEnabled(appPreference.independent_multi_touch_preference)
+        }
         flickView.setStandardPopupShowDelayMillis(
             if (surface == FlickGuideSurface.RomajiFlick12) romajiFlick12PopupDelayPreference.toLong() else 0L
         )
@@ -15128,9 +15137,32 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
         )
     }
 
-    private fun currentRomajiFlick12Layout(): KeyboardLayout =
-        if (customKeyboardMode == KeyboardInputMode.SYMBOLS) RomajiFlick12KeyLayout.createNumber()
-        else RomajiFlick12KeyLayout.create(isRomaji = isCustomLayoutRomajiMode)
+    private fun romajiFlick12Options(): RomajiFlick12Options {
+        fun assignment(direction: String, default: RomajiFlick12SpaceFlick) =
+            when (appPreference.romajiFlick12SpaceFlick(direction, default.name.lowercase())) {
+                "half_width_space" -> RomajiFlick12SpaceFlick.HALF_WIDTH_SPACE
+                "full_width_space" -> RomajiFlick12SpaceFlick.FULL_WIDTH_SPACE
+                "katakana" -> RomajiFlick12SpaceFlick.KATAKANA
+                "none" -> RomajiFlick12SpaceFlick.NONE
+                else -> default
+            }
+        return RomajiFlick12Options(
+            englishModeEnabled = appPreference.romaji_flick12_english_mode_enabled,
+            spaceUp = assignment("up", RomajiFlick12SpaceFlick.HALF_WIDTH_SPACE),
+            spaceLeft = assignment("left", RomajiFlick12SpaceFlick.FULL_WIDTH_SPACE),
+            spaceDown = assignment("down", RomajiFlick12SpaceFlick.KATAKANA),
+            spaceRight = assignment("right", RomajiFlick12SpaceFlick.NONE),
+        )
+    }
+
+    private fun currentRomajiFlick12Layout(): KeyboardLayout {
+        val options = romajiFlick12Options()
+        if (customKeyboardMode == KeyboardInputMode.SYMBOLS) return RomajiFlick12KeyLayout.createNumber(options)
+        return RomajiFlick12KeyLayout.create(
+            isRomaji = isCustomLayoutRomajiMode || !options.englishModeEnabled,
+            options = options,
+        )
+    }
 
     private fun applyRomajiFlick12Layout(resetInputMode: Boolean = false) {
         if (resetInputMode) {
@@ -16707,7 +16739,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
 
                     KeyAction.SwitchRomajiEnglish -> {
-                        isCustomLayoutRomajiMode = !isCustomLayoutRomajiMode
+                        isCustomLayoutRomajiMode =
+                            if (isRomajiFlick12Active && !appPreference.romaji_flick12_english_mode_enabled) true
+                            else !isCustomLayoutRomajiMode
                         persistCurrentCustomKeyboardInputModeIfEnabled()
                         if (isRomajiFlick12Active) onRomajiFlick12ModeKeyTapped()
                         else if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
@@ -17168,7 +17202,9 @@ class IMEService : InputMethodService(), LifecycleOwner, InputConnection,
                     }
 
                     KeyAction.SwitchRomajiEnglish -> {
-                        isCustomLayoutRomajiMode = !isCustomLayoutRomajiMode
+                        isCustomLayoutRomajiMode =
+                            if (isRomajiFlick12Active && !appPreference.romaji_flick12_english_mode_enabled) true
+                            else !isCustomLayoutRomajiMode
                         persistCurrentCustomKeyboardInputModeIfEnabled()
                         if (isRomajiFlick12Active) onRomajiFlick12ModeKeyTapped()
                         else if (splitController != null) scheduleSplitPresentation() else Handler(mainLooper).post {
